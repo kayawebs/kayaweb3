@@ -1,0 +1,208 @@
+---
+title: "pnpm vs Yarn vs npm — A Practical Comparison"
+date: "2025-12-29"
+category: "frontend"
+slug: "pnpm-yarn-npm"
+summary: "Compare pnpm, Yarn, and npm: core similarities, key differences, pros/cons, and basic usage with commands."
+---
+
+# pnpm vs Yarn vs npm — A Practical Comparison
+
+JavaScript package managers have evolved quickly. This article compares pnpm, Yarn, and npm from a practical developer perspective: what’s similar, what’s different, basic commands, and when to pick which.
+
+## Overview
+
+- npm: the default package manager bundled with Node.js. Reliable baseline, widely supported.
+- Yarn: introduced faster installs and a better lockfile; v3+ (Berry) adds Plug'n'Play (PnP) and modern features.
+- pnpm: focuses on disk efficiency and speed using a global content-addressable store with hard links.
+
+## Similarities
+
+- Package.json driven workflow: dependencies, scripts, semver ranges.
+- Lockfiles for reproducible installs: `package-lock.json` (npm), `yarn.lock` (Yarn), `pnpm-lock.yaml` (pnpm).
+- Common commands and semantics:
+  - Install deps: `npm i`, `yarn`, `pnpm i`
+  - Add/remove deps: `npm i <pkg>`, `yarn add <pkg>`, `pnpm add <pkg>`; similar for dev/peer/optional flags.
+  - Scripts: `npm run dev`, `yarn dev`, `pnpm dev`.
+
+## Key Differences
+
+### Installation model and disk usage
+
+- pnpm: creates a global content-addressable store and links packages into projects. Drastically reduces disk usage and speeds up repeated installs across repos.
+- Yarn (Classic/Modern): caches tarballs; with Berry, can use Plug'n'Play (no `node_modules`) or traditional `node_modules` via `nodeLinker`.
+- npm: classic flattened (now hoisted) `node_modules`. Simpler mental model but more disk.
+
+### Node resolution and compatibility
+
+- pnpm: strict node_modules layout (no phantom dependences). Catches undeclared deps early.
+- Yarn PnP (Berry): no `node_modules`. Fast and strict, but some tooling needs adapters.
+- npm: broadly compatible with most tooling out of the box.
+
+### Workspaces / monorepos
+
+- pnpm workspaces: simple `pnpm-workspace.yaml`, fast linking, powerful filters (`-w`, `-r`, `-F`).
+- Yarn workspaces: mature; Berry adds constraints/protocols.
+- npm workspaces: built-in since npm 7+, improving but fewer power-user features.
+
+### Lockfiles and determinism
+
+- pnpm-lock.yaml is explicit and stable across platforms.
+- yarn.lock is deterministic; Berry adds constraints and `resolutions`/`patch:`.
+- package-lock.json improved in npm 7+, still more verbose.
+
+### Performance and network
+
+- pnpm: very fast repeated installs thanks to global store and linking.
+- Yarn Berry: fast, especially with PnP and offline cache.
+- npm: good defaults; not as fast as pnpm on multi-repo scenarios.
+
+### Security and isolation
+
+- pnpm: strict dependency boundaries reduce accidental implicit access.
+- Yarn Berry: PnP explicitly blocks undeclared imports.
+- npm: relies on hoisting; easier accidental deep imports.
+
+## Basic Usage (Side-by-side)
+
+Install dependencies:
+
+```bash
+npm install
+yarn
+pnpm install
+```
+
+Add a runtime dependency:
+
+```bash
+npm install axios
+yarn add axios
+pnpm add axios
+```
+
+Add a dev dependency:
+
+```bash
+npm install -D typescript
+yarn add -D typescript
+pnpm add -D typescript
+```
+
+Remove a dependency:
+
+```bash
+npm uninstall axios
+yarn remove axios
+pnpm remove axios
+```
+
+Run scripts:
+
+```bash
+npm run dev
+yarn dev
+pnpm dev
+```
+
+Workspaces quickstart (pnpm example):
+
+```yaml
+# pnpm-workspace.yaml
+packages:
+  - apps/*
+  - packages/*
+```
+
+```bash
+pnpm -w install          # install for all
+pnpm -r build            # run build in all packages recursively
+pnpm -F app-web dev      # run dev only in app-web
+```
+
+Yarn workspaces (package.json):
+
+```json
+{
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"]
+}
+``;
+
+```bash
+yarn install
+yarn workspaces foreach run build
+```
+
+npm workspaces (package.json):
+
+```json
+{
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"]
+}
+```
+
+```bash
+npm install
+npm run -w build
+```
+
+## Pros and Cons
+
+### pnpm
+
+Pros
+- Minimal disk usage with global store and hard links
+- Fast repeated installs across multiple repos
+- Strict dependency boundaries catch errors early
+- Excellent workspace tooling (filters, recursive, etc.)
+
+Cons
+- Stricter layout can surface issues in tools relying on hoisting
+- Some older scripts assume npm-style paths
+
+### Yarn
+
+Pros
+- Berry PnP is fast and strict; great offline experience
+- Rich features (constraints, patch protocol, resolutions)
+- Mature workspaces
+
+Cons
+- PnP can require extra adapters for some tools
+- Two major lines (Classic vs Berry) can be confusing
+
+### npm
+
+Pros
+- Ubiquitous; ships with Node.js
+- Maximum ecosystem/tooling compatibility by default
+- Workspaces available since npm 7+
+
+Cons
+- Larger disk usage with classic node_modules
+- Fewer power-user features compared with pnpm/Yarn Berry
+
+## Recommendations
+
+- Solo projects or maximum compatibility: npm or pnpm.
+- Multi-repo/monorepo and speed/disk efficiency matter: pnpm.
+- Teams comfortable with Berry and adapters, want strictness and features: Yarn (Berry, PnP).
+
+## Migration Tips
+
+- Only one lockfile should exist. Remove other lockfiles when switching:
+  - pnpm: `pnpm import` can convert `package-lock.json`/`yarn.lock`.
+  - Yarn: `yarn import` (Classic) can read `package-lock.json`.
+  - npm: install to regenerate `package-lock.json`.
+- Use Corepack to manage versions consistently:
+
+```bash
+corepack enable
+corepack prepare pnpm@latest --activate
+corepack prepare yarn@stable --activate
+```
+
+That’s it — you now have a concise, practical comparison and quick commands to get productive with any of the three.
+

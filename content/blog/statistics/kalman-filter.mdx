@@ -1,0 +1,114 @@
+---
+title: "Kalman Filter — Intuition, Math, and Practical Implementation"
+date: "2025-12-29"
+category: "statistics"
+slug: "kalman-filter"
+summary: "A concise yet complete guide to the Kalman filter: intuition, state-space model, core update equations, implementation tips, and common applications."
+---
+
+# Kalman Filter — Intuition, Math, and Practical Implementation
+
+The Kalman filter is the optimal state estimator for linear Gaussian systems. It alternates between Predict and Update to estimate hidden states (e.g., position, velocity, attitude) from noisy sensor measurements.
+
+This guide covers: (1) Intuition and modeling, (2) Core equations, (3) Implementation notes, and (4) Applications and extensions.
+
+## 1. Intuition and Modeling
+
+### State-Space Model
+
+We model the system in discrete time with a linear Gaussian state-space:
+
+$$
+\begin{aligned}
+\mathbf{x}_k &= \mathbf{A}\,\mathbf{x}_{k-1} + \mathbf{B}\,\mathbf{u}_k + \mathbf{w}_k,\\
+\mathbf{z}_k &= \mathbf{H}\,\mathbf{x}_k + \mathbf{v}_k.
+\end{aligned}
+$$
+
+- $\mathbf{x}_k$: hidden state at time $k$ (e.g., position/velocity)
+- $\mathbf{u}_k$: control input (e.g., throttle/steering)
+- $\mathbf{z}_k$: observation/measurement (e.g., a GPS position)
+- $\mathbf{A},\,\mathbf{B},\,\mathbf{H}$: state transition, control input, and measurement matrices
+- $\mathbf{w}_k \sim \mathcal{N}(\mathbf{0},\,\mathbf{Q})$ and $\mathbf{v}_k \sim \mathcal{N}(\mathbf{0},\,\mathbf{R})$: process and measurement noise
+
+Goal: at each step, combine history and the current observation to estimate $\mathbf{x}_k$ with minimum mean-square error.
+
+## 2. Core Algorithm
+
+Let the previous posterior be $\hat{\mathbf{x}}_{k-1\mid k-1}$ with covariance $\mathbf{P}_{k-1\mid k-1}$.
+
+### Predict
+
+$$
+\begin{aligned}
+\hat{\mathbf{x}}_{k\mid k-1} &= \mathbf{A}\,\hat{\mathbf{x}}_{k-1\mid k-1} + \mathbf{B}\,\mathbf{u}_k,\\
+\mathbf{P}_{k\mid k-1} &= \mathbf{A}\,\mathbf{P}_{k-1\mid k-1}\,\mathbf{A}^\top + \mathbf{Q}.
+\end{aligned}
+$$
+
+### Update
+
+$$
+\begin{aligned}
+\mathbf{K}_k &= \mathbf{P}_{k\mid k-1}\,\mathbf{H}^\top\big(\mathbf{H}\,\mathbf{P}_{k\mid k-1}\,\mathbf{H}^\top + \mathbf{R}\big)^{-1},\\
+\hat{\mathbf{x}}_{k\mid k} &= \hat{\mathbf{x}}_{k\mid k-1} + \mathbf{K}_k\big(\mathbf{z}_k - \mathbf{H}\,\hat{\mathbf{x}}_{k\mid k-1}\big),\\
+\mathbf{P}_{k\mid k} &= (\mathbf{I} - \mathbf{K}_k\,\mathbf{H})\,\mathbf{P}_{k\mid k-1}.
+\end{aligned}
+$$
+
+The Kalman gain $\mathbf{K}_k$ balances model and measurement. Larger $\mathbf{R}$ (noisier sensor) increases reliance on the model; larger $\mathbf{Q}$ (rougher dynamics) increases reliance on measurements.
+
+## 3. Implementation Notes and Parameter Tuning
+
+- Initialization: choose $\hat{\mathbf{x}}_{0\mid 0}$ and $\mathbf{P}_{0\mid 0}$. Use larger diagonal variances in $\mathbf{P}$ if uncertain.
+- Choosing $\mathbf{Q}/\mathbf{R}$:
+  - $\mathbf{Q}$ reflects model imperfection. Increase when dynamics are aggressive or the model is crude.
+  - $\mathbf{R}$ reflects sensor unreliability. Increase for noisy or jittery measurements.
+- Numerical stability:
+  - Keep $\mathbf{P}$ symmetric PSD; symmetrize via $(\mathbf{P}+\mathbf{P}^\top)/2$ if needed.
+  - Prefer Cholesky or linear solves over explicit matrix inverses.
+  - Prevent covariance blow-up with minimum noise floors or adaptive tuning.
+- Dimensions: ensure $\mathbf{A},\,\mathbf{B},\,\mathbf{H}$ match state/control/measurement dimensions.
+
+### Minimal pseudocode (TypeScript-like)
+
+```ts
+type Vec = number[];
+type Mat = number[][];
+
+function predict(x: Vec, P: Mat, A: Mat, Q: Mat, B?: Mat, u?: Vec) {
+  const x_pred = add(mul(A, x), B && u ? mul(B, u) : zerosLike(x));
+  const P_pred = add(mul(mul(A, P), transpose(A)), Q);
+  return { x_pred, P_pred };
+}
+
+function update(x_pred: Vec, P_pred: Mat, z: Vec, H: Mat, R: Mat) {
+  const S = add(mul(mul(H, P_pred), transpose(H)), R);
+  const K = mul(mul(P_pred, transpose(H)), inv(S));
+  const y = sub(z, mul(H, x_pred));
+  const x_new = add(x_pred, mul(K, y));
+  const I = identity(P_pred.length);
+  const P_new = mul(sub(I, mul(K, H)), P_pred);
+  return { x_new, P_new };
+}
+```
+
+Use a robust linear algebra library in production; avoid implementing matrix inversion by hand.
+
+## 4. Applications and Extensions
+
+- Tracking: GPS + IMU fusion for mobile robots or UAVs.
+- Sensor fusion: complementary strengths across sensors (e.g., camera + IMU).
+- Finance: smoothing and latent-state estimation for volatile series.
+- Attitude estimation: fusing gyro/accelerometer/magnetometer.
+- AR/VR and IoT: reduce jitter; stabilize interaction/measurement.
+
+### Extensions
+
+- EKF: linearize nonlinear systems via Jacobians at the current estimate.
+- UKF: propagate sigma points; often more stable than EKF linearization.
+- RTS smoother: offline smoothing (forward KF + backward pass).
+
+## 5. Takeaways
+
+The essence of the Kalman filter is modeling uncertainty and balancing prediction against measurement. Master the linear–Gaussian assumptions and covariance propagation, and the equations fall into place. A follow-up can cover EKF/UKF and practical parameter tuning.
