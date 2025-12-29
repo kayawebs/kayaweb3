@@ -33,7 +33,7 @@ export default function RootLayout({
             <nav className="flex items-center gap-4 text-sm"></nav>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-5xl px-6 pb-16 pt-6 sm:px-10 sm:pt-8">{children}</main>
+        <main className="mx-auto w-full max-w-5xl px-0 pb-16 pt-6 sm:px-10 sm:pt-8">{children}</main>
       </body>
     </html>
   );

@@ -44,6 +44,15 @@ body {
   padding: var(--terminal-gutter-y) var(--terminal-gutter-x);
 }
 
+/* Mobile refinements: tighter gutters and radius */
+@media (max-width: 640px) {
+  :root {
+    --terminal-gutter-x: 1rem;
+    --terminal-gutter-y: 0.75rem;
+    --terminal-radius: 0.5rem;
+  }
+}
+
 .terminal-border {
   border: 1px solid var(--terminal-border);
 }

@@ -23,22 +23,23 @@ export default async function BlogIndexPage() {
 
             <ul className="divide-y divide-[var(--terminal-border)] border border-[var(--terminal-border)] rounded-md bg-[var(--terminal-panel-bg)]/40">
               {posts.map((post) => (
-                <li key={`${post.category}-${post.slug}`} className="flex flex-col gap-1 px-4 py-3 text-sm hover:bg-[var(--terminal-panel-bg)]">
-                  <div className="flex items-center justify-between gap-4">
+                <li key={`${post.category}-${post.slug}`} className="flex flex-col gap-1 px-3 sm:px-4 py-3 text-sm hover:bg-[var(--terminal-panel-bg)]">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
                     <Link
                       href={`/blog/${post.category}/${post.slug}`}
-                      className="font-medium text-[var(--foreground)] hover:underline"
+                      className="block min-w-0 break-words font-medium text-[var(--foreground)] hover:underline"
                     >
                       {post.title}
                     </Link>
-                    <span className="text-xs font-mono text-[var(--terminal-muted)]">
+                    <span className="hidden text-xs font-mono text-[var(--terminal-muted)] sm:inline">
                       {post.date}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between gap-4 text-xs text-[var(--terminal-muted)]">
-                    <span className="font-mono">/{post.category}/{post.slug}</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 text-xs text-[var(--terminal-muted)]">
+                    <span className="min-w-0 truncate font-mono">/{post.category}/{post.slug}</span>
+                    <span className="sm:hidden text-[11px] font-mono">{post.date}</span>
                     {post.summary && (
-                      <span className="truncate text-right sm:max-w-xs">
+                      <span className="min-w-0 truncate text-right sm:max-w-xs">
                         {post.summary}
                       </span>
                     )}
@@ -52,4 +53,3 @@ export default async function BlogIndexPage() {
     </div>
   );
 }
-

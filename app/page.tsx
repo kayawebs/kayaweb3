@@ -113,34 +113,37 @@ export default function Home() {
 									</div>
 								</summary>
 								<div className="border-t border-[var(--terminal-border)] bg-[var(--terminal-panel-bg)]/40 px-4 py-2">
-									<ul className="space-y-1 pl-4">
-										{category.posts.map((post, idx) => (
-											<li
-												key={`${post.category}-${post.slug}`}
-												className="flex items-center justify-between gap-4 rounded-md px-2 py-2 text-sm hover:bg-[var(--terminal-panel-bg)]"
-											>
-												<Link
-													href={`/blog/${post.category}/${post.slug}`}
-													className="flex flex-1 items-center gap-3"
-												>
-													<span className="text-xs font-mono text-[var(--terminal-muted)]">
-														{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
-													</span>
-													<div className="flex flex-col">
-														<span className="font-medium text-[var(--foreground)]">
-															{post.title}
-														</span>
-														<span className="mt-0.5 text-[11px] font-mono text-[var(--terminal-muted)]">
-															/{post.category}/{post.slug}
-													</span>
-													</div>
-												</Link>
-												<span className="text-xs font-mono text-[var(--terminal-muted)]">
-													{post.date}
-												</span>
-											</li>
-										))}
-									</ul>
+                                <ul className="space-y-1 pl-3 sm:pl-4">
+                                  {category.posts.map((post, idx) => (
+                                    <li
+                                      key={`${post.category}-${post.slug}`}
+                                      className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 sm:gap-4 rounded-md px-2 py-2 text-sm hover:bg-[var(--terminal-panel-bg)]"
+                                    >
+                                      <Link
+                                        href={`/blog/${post.category}/${post.slug}`}
+                                        className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3"
+                                      >
+                                        <span className="shrink-0 text-xs font-mono text-[var(--terminal-muted)]">
+                                          {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                                        </span>
+                                        <div className="flex min-w-0 flex-col">
+                                          <span className="break-words font-medium text-[var(--foreground)]">
+                                            {post.title}
+                                          </span>
+                                          <span className="mt-0.5 truncate text-[11px] font-mono text-[var(--terminal-muted)]">
+                                            /{post.category}/{post.slug}
+                                          </span>
+                                        </div>
+                                      </Link>
+                                      <span className="hidden text-xs font-mono text-[var(--terminal-muted)] sm:inline">
+                                        {post.date}
+                                      </span>
+                                      <span className="sm:hidden text-[11px] font-mono text-[var(--terminal-muted)]">
+                                        {post.date}
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
 								</div>
 							</details>
 						))}

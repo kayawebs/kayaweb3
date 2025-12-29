@@ -57,7 +57,7 @@ export default async function BlogPostPage(props: PageProps) {
 
           <article>
             <header className="mb-6 border-b border-[var(--terminal-border)] pb-4">
-              <h1 className="mb-2 text-2xl font-semibold leading-tight tracking-tight">
+              <h1 className="mb-2 text-2xl font-semibold leading-tight tracking-tight break-words">
                 {post.title}
               </h1>
               <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-[var(--terminal-muted)]">
@@ -70,7 +70,7 @@ export default async function BlogPostPage(props: PageProps) {
               )}
             </header>
 
-            <div className="mt-6 prose prose-invert max-w-none prose-headings:font-semibold prose-a:text-[var(--terminal-accent)] prose-a:no-underline hover:prose-a:underline prose-code:text-[var(--terminal-accent)] prose-pre:bg-[var(--terminal-panel-bg)]">
+            <div className="mt-6 prose prose-invert max-w-none prose-headings:font-semibold prose-headings:break-words prose-a:text-[var(--terminal-accent)] prose-a:no-underline hover:prose-a:underline prose-code:text-[var(--terminal-accent)] prose-pre:bg-[var(--terminal-panel-bg)]">
               <MDXRemote
                 source={post.content}
                 options={{
