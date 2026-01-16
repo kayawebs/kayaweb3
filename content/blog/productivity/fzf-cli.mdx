@@ -1,0 +1,119 @@
+---
+title: "命令行提升效率：fzf 使用指南（Linux/macOS）"
+date: "2025-12-30"
+category: "productivity"
+slug: "fzf-cli"
+summary: "用 fzf 为你的命令行装上模糊搜索引擎：文件/历史/进程/Git 一把梭，含安装、常用绑定与实战示例。"
+---
+
+# 命令行提升效率：fzf 使用指南（Linux/macOS）
+
+`fzf` 是一款通用模糊搜索器（fuzzy-finder）。它把“快速检索 + 即选即用”的体验带到终端：找文件、查历史、选分支、杀进程、SSH 跳转……统统一步。
+
+## 安装
+
+```bash
+# macOS (Homebrew)
+brew install fzf
+$(brew --prefix)/opt/fzf/install    # 一键启用按键绑定与补全
+
+# Ubuntu/Debian
+sudo apt install fzf
+
+# 其他 Linux 发行版
+git clone --depth 1 https://github.com/junegunn/fzf ~/.fzf
+~/.fzf/install
+```
+
+建议运行安装脚本启用“按键绑定”和“补全”，常用默认：
+
+- Ctrl-R: 搜索命令历史
+- Ctrl-T: 在当前命令行插入选中文件路径
+- Alt-C: 快速 cd 到选中目录
+
+## 快速上手
+
+查找文件（结合 ripgrep 更快）：
+
+```bash
+rg --files | fzf            # 仅列出文件再模糊搜索
+rg -n "keyword" | fzf      # 在搜索结果中再筛选
+```
+
+配合 `xargs` 批量处理：
+
+```bash
+rg --files | fzf -m | xargs -I{} echo {}
+```
+
+## 历史/进程/Git 常见场景
+
+- 命令历史：按 Ctrl-R 即可交互式搜索；或显式：
+
+  ```bash
+  fc -ln 0 | fzf | pbcopy   # macOS 复制到剪贴板
+  fc -ln 0 | fzf | xclip -sel clip
+  ```
+
+- 杀进程：
+
+  ```bash
+  ps aux | fzf -m | awk '{print $2}' | xargs kill
+  ```
+
+- Git：分支/提交/文件选择
+
+  ```bash
+  # 切换分支
+  git branch | sed 's/* //' | fzf | xargs git switch
+
+  # 选择提交做 cherry-pick
+  git log --oneline | fzf -m | awk '{print $1}' | xargs git cherry-pick
+
+  # 在改动文件中搜索并打开
+  git diff --name-only | fzf | xargs -I{} ${EDITOR:-vim} {}
+  ```
+
+## SSH/服务编排
+
+结合主机列表，一键跳：
+
+```bash
+cat ~/.ssh/hosts | fzf | xargs -I{} ssh {}
+```
+
+或选择 Kubernetes 上的 Pod：
+
+```bash
+kubectl get pods -o name | fzf | xargs kubectl logs -f
+```
+
+## 常用增强参数
+
+- `-m`：多选
+- `--preview '<cmd> {}'`：右侧预览（`{}` 为当前项）
+- `--bind 'enter:execute(<cmd> {})'`：回车执行动作
+- `--height 40% --layout=reverse`：视图更紧凑、结果置顶
+
+示例：预览 Markdown、回车用编辑器打开
+
+```bash
+rg --files | fzf --preview 'bat --style=plain --color=always {}' \
+  --bind 'enter:execute(${EDITOR:-vim} {+})+abort' -m
+```
+
+## 快捷函数/别名示例
+
+追加到 `~/.zshrc` 或 `~/.bashrc`：
+
+```bash
+fd() { find "${1:-.}" -type f | fzf; }
+fcd() { cd "$(fd "${1:-.}" | xargs -I{} dirname {} | fzf)"; }
+fkill() { ps aux | fzf -m | awk '{print $2}' | xargs kill; }
+fgrep() { rg -n "$1" | fzf; }
+```
+
+## 结语
+
+从“找文件/命令历史”开始，把 fzf 融入你的日常流。通过 `--preview`、`--bind` 和多选，把它升级为“交互式命令分发器”。
+

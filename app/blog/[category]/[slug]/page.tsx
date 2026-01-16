@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import SortVisualizer from "@/components/SortVisualizer";
 
 import { getPost } from "@/lib/blog";
 
@@ -78,6 +79,9 @@ export default async function BlogPostPage(props: PageProps) {
                     remarkPlugins: [remarkMath],
                     rehypePlugins: [rehypeKatex],
                   },
+                }}
+                components={{
+                  SortViz: SortVisualizer,
                 }}
               />
             </div>

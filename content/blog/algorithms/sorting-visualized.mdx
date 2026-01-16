@@ -1,0 +1,49 @@
+---
+title: "Sorting Algorithms — Visualized and Compared"
+date: "2025-12-30"
+category: "algorithms"
+slug: "sorting-visualized"
+summary: "A quick comparison of common sorting algorithms with a built-in visualizer component for bubble and insertion sort."
+---
+
+# Sorting Algorithms — Visualized and Compared
+
+This post compares several classic sorting algorithms and includes an inline visualizer you can play with. Try switching algorithms and watch the swaps.
+
+## Play with a Visualizer
+
+<SortViz algorithm="bubble" values={[5,3,8,4,2,7,1,6]} speed={350} />
+
+Try insertion sort:
+
+<SortViz algorithm="insertion" values={[9,1,5,3,7,2,8,6,4]} speed={300} />
+
+## Algorithms Covered
+
+- Bubble sort: simple but O(n²). Repeatedly swap adjacent out-of-order elements.
+- Insertion sort: good for nearly-sorted arrays; O(n²) worst, O(n) best.
+- Selection sort: always O(n²); minimal swaps but not stable.
+- Merge sort: O(n log n) stable, good for large arrays; needs extra memory.
+- Quick sort: average O(n log n), in-place; pick pivots carefully to avoid O(n²).
+
+## Big-O Summary
+
+| Algorithm   | Best     | Average  | Worst    | Stable | In-place |
+|-------------|----------|----------|----------|--------|----------|
+| Bubble      | O(n)     | O(n²)    | O(n²)    | Yes    | Yes      |
+| Insertion   | O(n)     | O(n²)    | O(n²)    | Yes    | Yes      |
+| Selection   | O(n²)    | O(n²)    | O(n²)    | No     | Yes      |
+| Merge       | O(n log n)| O(n log n)| O(n log n)| Yes | No       |
+| Quick       | O(n log n)| O(n log n)| O(n²)   | No     | Yes      |
+
+## Practical Notes
+
+- Use insertion sort for tiny arrays or when inputs are nearly sorted.
+- Merge/Tim sort are common in standard libraries for general purpose stability.
+- Quick sort variants dominate in practice; choosing good pivots (median-of-three) and tail recursion elimination are key.
+- Avoid O(n²) methods for large n unless input characteristics justify it.
+
+---
+
+Want more? We can extend the visualizer to support merge/quick sort and show comparisons per second (ops) and exact swap counts.
+
