@@ -66,6 +66,18 @@ export default async function BlogPostPage(props: PageProps) {
                 <span>·</span>
                 <span>/{post.category}/{post.slug}</span>
               </div>
+              {post.tags && post.tags.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-[var(--terminal-border)] px-2 py-0.5 text-[11px] font-mono text-[var(--terminal-muted)]"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               {post.summary && (
                 <p className="mt-3 text-sm text-[var(--foreground)]/80">{post.summary}</p>
               )}

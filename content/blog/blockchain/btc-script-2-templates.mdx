@@ -1,0 +1,67 @@
+---
+title: "Bitcoin Script 101 (2): Standard Script Templates"
+date: "2026-01-30"
+category: "blockchain"
+slug: "btc-script-2-templates"
+summary: "From P2PKH to Taproot: the standard templates and what problems they solve."
+tags: ["btc"]
+---
+
+# Bitcoin Script 101 (2): Standard Script Templates
+
+Most Bitcoin scripts are not handwritten; they’re standard templates. Understanding them is understanding real‑world Bitcoin usage.
+
+## 1) P2PKH (Pay to Public Key Hash)
+
+The classic “pay to address” form.
+
+Locking script (scriptPubKey):
+
+```
+OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+```
+
+Unlocking script (scriptSig):
+
+```
+<sig> <pubkey>
+```
+
+Use case: legacy/base58 addresses.
+
+## 2) P2SH (Pay to Script Hash)
+
+Hash the redeem script to improve compatibility with complex conditions.
+
+锁定脚本：
+
+```
+OP_HASH160 <ScriptHash> OP_EQUAL
+```
+
+To spend, provide the `redeemScript` plus the data that satisfies it.
+
+Use case: multisig, complex conditions, legacy compatibility.
+
+## 3) SegWit (P2WPKH / P2WSH)
+
+SegWit moves signatures out of the transaction body, improving efficiency and fixing malleability.
+
+- **P2WPKH**: SegWit version of P2PKH  
+- **P2WSH**: SegWit version of P2SH  
+
+Scripts and signatures live in the witness area. Addresses usually start with `bc1`.
+
+## 4) Taproot (P2TR)
+
+Taproot introduces Schnorr signatures and script trees (MAST):
+
+- More efficient key‑path spends  
+- Better privacy (script paths revealed only when used)  
+- More composability for complex contracts  
+
+Use case: advanced multisig, timelocks, and more private complex scripts.
+
+---
+
+Next: how Script is executed during transaction validation.

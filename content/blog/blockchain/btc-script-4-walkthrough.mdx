@@ -1,0 +1,59 @@
+---
+title: "Bitcoin Script 101 (4): Step‑by‑Step P2PKH Walkthrough"
+date: "2026-01-30"
+category: "blockchain"
+slug: "btc-script-4-walkthrough"
+summary: "Walk through a P2PKH example step by step and watch the stack evolve."
+tags: ["btc"]
+---
+
+# Bitcoin Script 101 (4): Step‑by‑Step P2PKH Walkthrough
+
+This post walks through a classic P2PKH example so the “script + stack execution” model becomes concrete.
+
+## 1) Locking Script (scriptPubKey)
+
+```
+OP_DUP OP_HASH160 <PubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
+```
+
+Meaning:
+
+- Duplicate the public key  
+- Hash and compare to the address hash  
+- Verify the signature if the hash matches  
+
+## 2) Unlocking Script (scriptSig)
+
+```
+<sig> <pubkey>
+```
+
+Meaning: provide signature and public key to prove ownership.
+
+## 3) Concatenated Execution (Conceptual Steps)
+
+Order: unlocking script first, then locking script.
+
+Initial stack: empty  
+
+1. Push `<sig>`  
+2. Push `<pubkey>`  
+3. `OP_DUP` duplicates the pubkey  
+4. `OP_HASH160` hashes the pubkey  
+5. Push `<PubKeyHash>`  
+6. `OP_EQUALVERIFY` compares hashes, fails if not equal  
+7. `OP_CHECKSIG` verifies signature with the pubkey  
+
+If the signature matches the transaction, the stack ends with true and the input is valid.
+
+## 4) Summary
+
+P2PKH’s core logic is simple:  
+**“Give me a signature + pubkey → I verify you own the private key.”**
+
+Once this is clear, you can read P2SH, multisig, and Taproot scripts more easily.
+
+---
+
+That’s the four‑part BTC Script 101 series. If you want, I can continue with multisig, timelocks (CLTV/CSV), and Taproot script paths.

@@ -1,0 +1,74 @@
+---
+title: "Bitcoin Script 101 (1): Stack Model and Core Concepts"
+date: "2026-01-30"
+category: "blockchain"
+slug: "btc-script-1-basics"
+summary: "From UTXO to Script: the stack model, locking/unlocking scripts, and essential opcodes."
+tags: ["btc"]
+---
+
+# Bitcoin Script 101 (1): Stack Model and Core Concepts
+
+Bitcoin Script is the validation system used to **spend UTXOs**. It’s not a general-purpose language; it’s **stack-based, loop-free, and terminating**. The first step to understanding Script is the “stack + UTXO” mindset.
+
+## 1) UTXOs and Scripts
+
+Each UTXO carries a **locking condition** (locking script / scriptPubKey). To spend it, you must provide an **unlocking script** (scriptSig or witness) that satisfies that condition.
+
+Put simply:  
+**Locking script** says: “To spend me, satisfy these conditions.”  
+**Unlocking script** says: “Here is the proof.”  
+
+The two scripts are concatenated and executed. If the final result is **true**, the UTXO can be spent.
+
+## 2) Stack Machine Model
+
+Script is a LIFO stack machine.  
+Opcodes push data, pop data, and push results back.
+
+Example (conceptual):
+
+```
+2 3 OP_ADD 5 OP_EQUAL
+```
+
+Execution:
+
+- Push 2, push 3  
+- OP_ADD pops 3 and 2, pushes 5  
+- Push 5  
+- OP_EQUAL compares and pushes true  
+
+Top of stack is true → script passes.
+
+## 3) Three Rules of Script
+
+1. **No loops**: always terminates  
+2. **Stateless**: depends only on inputs and scripts  
+3. **Boolean result**: stack top must be true  
+
+This makes Script ideal for **verification**, not general computation.
+
+## 4) Common Opcodes
+
+Starter opcodes:
+
+- `OP_DUP`: duplicate top stack item  
+- `OP_HASH160`: hash = RIPEMD160(SHA256(x))  
+- `OP_EQUAL` / `OP_EQUALVERIFY`: compare  
+- `OP_CHECKSIG`: verify signature  
+- `OP_VERIFY`: assert true, otherwise fail  
+
+## 5) A Minimal Example: P2PKH Intuition
+
+Classic P2PKH (details next) is:
+
+1) Unlocking script provides signature and public key  
+2) Locking script verifies signature vs public key  
+3) Public key hash matches the address hash in the output  
+
+That’s Script’s way of saying “only the key owner can spend.”
+
+---
+
+Next: P2PKH / P2SH / SegWit / Taproot templates.

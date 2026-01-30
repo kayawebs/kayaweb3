@@ -1,0 +1,55 @@
+---
+title: "Bitcoin Script 101 (3): Script Execution in Validation"
+date: "2026-01-30"
+category: "blockchain"
+slug: "btc-script-3-validation"
+summary: "From inputs to outputs: how scripts are combined, executed, and validated by nodes."
+tags: ["btc"]
+---
+
+# Bitcoin Script 101 (3): Script Execution in Validation
+
+When you broadcast a transaction, nodes validate each input against its referenced UTXO. Script is the core of that process.
+
+## 1) Inputs Reference Outputs
+
+Each input references a UTXO (a previous output). That UTXO contains the locking script (scriptPubKey).
+
+The input provides an unlocking script (scriptSig or witness).  
+Validation concatenates **unlocking script + locking script** and executes them.
+
+## 2) The Validation Flow
+
+Simplified non‑SegWit flow:
+
+1. Push unlocking script data  
+2. Execute locking script  
+3. Stack top is true → valid  
+
+SegWit moves signatures and script data to the witness field, but execution logic is the same.
+
+## 3) How Signatures Are Checked
+
+Ownership is verified by `OP_CHECKSIG` or `OP_CHECKMULTISIG`:
+
+- Validate signature against the public key  
+- Signature commits to specific transaction fields (SIGHASH)  
+- Push true on success  
+
+If the signature doesn’t match, the script fails.
+
+## 4) Common Failure Reasons
+
+- Missing unlocking data  
+- Signature doesn’t match transaction  
+- Public key hash mismatch  
+- Witness/script doesn’t match output type  
+
+## 5) The Key Idea
+
+Script doesn’t “grant” permissions; it **verifies** them.  
+Nodes simply check whether the input evidence satisfies the output conditions.
+
+---
+
+Next: a full step‑by‑step walkthrough of a P2PKH script.

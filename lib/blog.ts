@@ -10,6 +10,7 @@ export type BlogMeta = {
   category: string;
   slug: string;
   summary?: string;
+  tags?: string[];
 };
 
 export type BlogPost = BlogMeta & {
@@ -45,6 +46,7 @@ export function getAllPosts(): BlogMeta[] {
         category: (data.category as string) ?? category,
         slug,
         summary: data.summary as string | undefined,
+        tags: Array.isArray(data.tags) ? (data.tags as string[]) : undefined,
       });
     }
   }
@@ -75,7 +77,7 @@ export function getPost(category: string, slug: string): BlogPost | null {
     category: (data.category as string) ?? category,
     slug: (data.slug as string) ?? slug,
     summary: data.summary as string | undefined,
+    tags: Array.isArray(data.tags) ? (data.tags as string[]) : undefined,
     content,
   };
 }
-

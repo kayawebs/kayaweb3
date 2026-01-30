@@ -38,11 +38,21 @@ export default async function BlogIndexPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 text-xs text-[var(--terminal-muted)]">
                     <span className="min-w-0 truncate font-mono">/{post.category}/{post.slug}</span>
                     <span className="sm:hidden text-[11px] font-mono">{post.date}</span>
-                    {post.summary && (
-                      <span className="min-w-0 truncate text-right sm:max-w-xs">
-                        {post.summary}
-                      </span>
-                    )}
+                    <div className="flex min-w-0 flex-wrap gap-1 sm:justify-end sm:max-w-xs">
+                      {post.tags?.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded border border-[var(--terminal-border)] px-1.5 py-0.5 text-[10px] font-mono"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                      {post.summary && (
+                        <span className="min-w-0 truncate text-right">
+                          {post.summary}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </li>
               ))}
