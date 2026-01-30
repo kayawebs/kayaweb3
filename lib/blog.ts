@@ -55,6 +55,43 @@ export function getAllPosts(): BlogMeta[] {
   return posts.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
+export function getAllPostsWithContent(): BlogPost[] {
+  const categories = fs.readdirSync(CONTENT_DIR);
+  const posts: BlogPost[] = [];
+
+  for (const category of categories) {
+    const categoryDir = path.join(CONTENT_DIR, category);
+    const stat = fs.statSync(categoryDir);
+    if (!stat.isDirectory()) continue;
+
+    const files = fs.readdirSync(categoryDir).filter((f) => f.endsWith(".mdx"));
+
+    for (const file of files) {
+      const fullPath = path.join(categoryDir, file);
+      const source = fs.readFileSync(fullPath, "utf8");
+      const { data, content } = matter(source);
+
+      const slug = (data.slug as string) ?? file.replace(/\.mdx$/, "");
+
+      const date = data.date instanceof Date
+        ? data.date.toISOString().split("T")[0]
+        : (data.date as string);
+
+      posts.push({
+        title: data.title as string,
+        date,
+        category: (data.category as string) ?? category,
+        slug,
+        summary: data.summary as string | undefined,
+        tags: Array.isArray(data.tags) ? (data.tags as string[]) : undefined,
+        content,
+      });
+    }
+  }
+
+  return posts.sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
 export function getPostsByCategory(category: string): BlogMeta[] {
   return getAllPosts().filter((post) => post.category === category);
 }

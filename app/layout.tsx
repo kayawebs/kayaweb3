@@ -30,7 +30,9 @@ export default function RootLayout({
         <header className="border-b border-[var(--terminal-border)]">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-3 sm:px-10">
             <a href="/" className="text-sm font-mono terminal-accent">{"$> Kaya"}</a>
-            <nav className="flex items-center gap-4 text-sm"></nav>
+            <nav className="flex items-center gap-4 text-sm">
+              <a href="/search" className="underline-offset-2 hover:underline">Search</a>
+            </nav>
           </div>
         </header>
         <main className="mx-auto w-full max-w-5xl px-0 pb-16 pt-6 sm:px-10 sm:pt-8">{children}</main>
