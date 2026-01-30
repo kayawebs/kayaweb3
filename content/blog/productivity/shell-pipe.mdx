@@ -1,0 +1,130 @@
+---
+title: "Shell Pipes Explained: How `|` Works in the Command Line"
+date: "2026-01-30"
+category: "productivity"
+slug: "shell-pipe"
+summary: "A practical guide to the pipe operator `|`: how it connects commands, common patterns, and useful examples."
+---
+
+# Shell Pipes Explained: How `|` Works in the Command Line
+
+The pipe operator (`|`) is one of the most powerful ideas in the Unix shell. It connects the output of one command directly into the input of the next command, enabling quick, composable workflows.
+
+## What a Pipe Does
+
+In plain terms:
+
+```
+commandA | commandB
+```
+
+means:
+
+- `commandA` writes to **stdout** (standard output)
+- `commandB` reads from **stdin** (standard input)
+- the pipe connects them
+
+This lets you chain small tools together without temporary files.
+
+## Simple Examples
+
+List files and filter by keyword:
+
+```bash
+ls -la | grep "log"
+```
+
+Count how many matches you have:
+
+```bash
+rg "error" app.log | wc -l
+```
+
+Sort processes by memory usage:
+
+```bash
+ps aux | sort -k 4 -r | head -n 5
+```
+
+## Why Pipes Are Powerful
+
+- **Composability**: build complex workflows from small tools
+- **Speed**: no intermediate files
+- **Clarity**: each command does one thing well
+
+Unix tools are designed to work like LEGO: the pipe is the connector.
+
+## Common Patterns
+
+### Search → Filter → Act
+
+```bash
+rg "TODO" -n | fzf | awk -F: '{print $1\":\"$2}' | xargs -I{} ${EDITOR:-vim} {}
+```
+
+### Produce → Reduce
+
+```bash
+du -sh * | sort -h | tail -n 5
+```
+
+### Generate → Transform
+
+```bash
+printf "%s\n" one two three | tr 'a-z' 'A-Z'
+```
+
+## Pipes vs Redirects
+
+Pipes are not the same as redirects:
+
+- `>` writes output to a file: `ls > files.txt`
+- `|` sends output to another command: `ls | grep "src"`
+
+You can combine them:
+
+```bash
+rg "error" app.log | tee errors.txt | wc -l
+```
+
+Here `tee` writes to a file **and** passes the stream along.
+
+## Exit Codes and Failures
+
+By default, only the **last** command's exit status is returned. In Bash, you can inspect all statuses with:
+
+```bash
+echo ${PIPESTATUS[@]}
+```
+
+In Zsh:
+
+```bash
+echo $pipestatus
+```
+
+This matters when you need to know if an earlier command failed.
+
+## Practical Recipes
+
+- Find and open a file:
+
+  ```bash
+  rg --files | fzf | xargs -I{} ${EDITOR:-vim} {}
+  ```
+
+- Kill a selected process:
+
+  ```bash
+  ps aux | fzf -m | awk '{print $2}' | xargs kill
+  ```
+
+- Extract columns from CSV:
+
+  ```bash
+  cat data.csv | cut -d, -f1,3 | column -t -s,
+  ```
+
+## Takeaway
+
+The pipe is the glue of the Unix philosophy: small tools connected into powerful pipelines. Once you get comfortable with `|`, your command line becomes a programmable toolkit rather than a list of isolated commands.
