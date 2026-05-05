@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
@@ -16,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Kaya",
   description: "Kaya's blog and terminal-style tools for Web3, development, and fast browser utilities.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: ["/icon.svg"],
+    apple: [{ url: "/apple-icon" }],
+  },
 };
 
 export default function RootLayout({
@@ -34,10 +40,12 @@ export default function RootLayout({
             <nav className="flex items-center gap-4 text-sm">
               <Link href="/tools" className="underline-offset-2 hover:underline">Tools</Link>
               <Link href="/search" className="underline-offset-2 hover:underline">Search</Link>
+              <Link href="/privacy" className="underline-offset-2 hover:underline">Privacy</Link>
             </nav>
           </div>
         </header>
         <main className="mx-auto w-full max-w-5xl px-0 pb-16 pt-6 sm:px-10 sm:pt-8">{children}</main>
+        <Analytics />
       </body>
     </html>
   );

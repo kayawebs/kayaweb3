@@ -204,7 +204,7 @@ export default function Home() {
 						>
 							kayaweb3@gmail.com
 						</a>
-						.
+						. <Link href="/privacy" className="underline">Privacy Policy</Link>
 					</p>
 				</footer>
 			</main>
