@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Terminal Style UI",
-  description: "Pure dark background with bright mono text, terminal-like UI.",
+  title: "Kaya",
+  description: "Kaya's blog and terminal-style tools for Web3, development, and fast browser utilities.",
 };
 
 export default function RootLayout({
@@ -29,9 +30,10 @@ export default function RootLayout({
       >
         <header className="border-b border-[var(--terminal-border)]">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-3 sm:px-10">
-            <a href="/" className="text-sm font-mono terminal-accent">{"$> Kaya"}</a>
+            <Link href="/" className="text-sm font-mono terminal-accent">{"$> Kaya"}</Link>
             <nav className="flex items-center gap-4 text-sm">
-              <a href="/search" className="underline-offset-2 hover:underline">Search</a>
+              <Link href="/tools" className="underline-offset-2 hover:underline">Tools</Link>
+              <Link href="/search" className="underline-offset-2 hover:underline">Search</Link>
             </nav>
           </div>
         </header>
