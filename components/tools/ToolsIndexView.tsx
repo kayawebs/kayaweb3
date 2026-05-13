@@ -14,7 +14,7 @@ type ToolsIndexViewProps = {
 export default function ToolsIndexView({ locale }: ToolsIndexViewProps) {
   const baseSections = getLocalizedToolCollection(locale);
   const ui = getToolUiText(locale);
-  const [recentSlugs] = useState<string[]>(() => readRecentToolSlugs());
+  const [recentSlugs, setRecentSlugs] = useState<string[]>([]);
   const sections = useMemo(() => {
     const recentItems = recentSlugs
       .map((slug) => getLocalizedTool(slug, locale))
@@ -35,7 +35,15 @@ export default function ToolsIndexView({ locale }: ToolsIndexViewProps) {
       ...baseSections,
     ];
   }, [baseSections, locale, recentSlugs, ui.recentDescription, ui.recentTitle]);
-  const [activeCategory, setActiveCategory] = useState<string>(() => (recentSlugs.length > 0 ? "recent" : baseSections[0]?.key ?? ""));
+  const [activeCategory, setActiveCategory] = useState<string>(() => baseSections[0]?.key ?? "");
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setRecentSlugs(readRecentToolSlugs());
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     const sectionElements = sections
