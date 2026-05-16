@@ -18,6 +18,7 @@ const TEXT = {
     won: "2048 reached.",
     running: "Keep merging tiles.",
     lost: "No moves left.",
+    gameOverTitle: "Game over",
     up: "Up",
     down: "Down",
     left: "Left",
@@ -32,6 +33,7 @@ const TEXT = {
     won: "已经达到 2048。",
     running: "继续合并方块。",
     lost: "已经没有可走步。",
+    gameOverTitle: "游戏失败",
     up: "上",
     down: "下",
     left: "左",
@@ -201,7 +203,7 @@ function tileStyle(value: number) {
     256: { bg: "#fb7185", color: "#200208" },
     512: { bg: "#38bdf8", color: "#03121d" },
     1024: { bg: "#a78bfa", color: "#10071f" },
-    2048: { bg: "#f5f5f5", color: "#02040a" },
+    2048: { bg: "#ef4444", color: "#fff7ed" },
   };
 
   return palette[value] ?? { bg: "#e879f9", color: "#17051c" };
@@ -286,7 +288,8 @@ export default function Game2048Tool({ locale = "en" }: { locale?: ToolLocale })
     setAnimating(false);
   };
 
-  const status = hasWon(tiles) ? text.won : hasMoves(tiles) ? text.running : text.lost;
+  const gameOver = !hasMoves(tiles);
+  const status = hasWon(tiles) ? text.won : gameOver ? text.lost : text.running;
   const cells = useMemo(() => Array.from({ length: SIZE * SIZE }, (_, index) => index), []);
 
   return (
@@ -351,6 +354,23 @@ export default function Game2048Tool({ locale = "en" }: { locale?: ToolLocale })
             </div>
           );
         })}
+        {gameOver && (
+          <div className="absolute inset-3 z-20 flex flex-col items-center justify-center gap-4 rounded-md border border-red-400/50 bg-[#02040a]/86 p-6 text-center backdrop-blur-sm">
+            <div className="space-y-1">
+              <div className="text-xl font-semibold text-red-300">{text.gameOverTitle}</div>
+              <div className="font-mono text-sm text-[var(--terminal-muted)]">
+                {text.score}: {score}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={reset}
+              className="rounded border border-red-300/70 px-4 py-2 font-mono text-sm text-red-100 transition-colors hover:bg-red-400/15"
+            >
+              {text.newGame}
+            </button>
+          </div>
+        )}
       </div>
       <style jsx>{`
         @keyframes tile-pop {
