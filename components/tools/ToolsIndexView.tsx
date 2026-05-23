@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { MouseEvent } from "react";
 import Link from "next/link";
 
 import { readRecentToolSlugs } from "@/components/tools/recent-tools";
@@ -77,6 +78,13 @@ export default function ToolsIndexView({ locale }: ToolsIndexViewProps) {
     };
   }, [sections]);
 
+  const handleCategoryClick = (event: MouseEvent<HTMLAnchorElement>, categoryKey: string) => {
+    event.preventDefault();
+    setActiveCategory(categoryKey);
+    document.getElementById(categoryKey)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", getToolPath(locale));
+  };
+
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans">
       <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-6 pb-16 pt-12 sm:px-10 sm:pt-16">
@@ -99,6 +107,7 @@ export default function ToolsIndexView({ locale }: ToolsIndexViewProps) {
                 <a
                   key={category.key}
                   href={`#${category.key}`}
+                  onClick={(event) => handleCategoryClick(event, category.key)}
                   aria-current={activeCategory === category.key ? "true" : undefined}
                   className="rounded-lg border border-[var(--terminal-border)] bg-[var(--terminal-panel-bg)]/40 px-4 py-3 transition-colors hover:border-[var(--terminal-accent)]"
                 >
@@ -123,6 +132,7 @@ export default function ToolsIndexView({ locale }: ToolsIndexViewProps) {
                   <a
                     key={category.key}
                     href={`#${category.key}`}
+                    onClick={(event) => handleCategoryClick(event, category.key)}
                     aria-current={activeCategory === category.key ? "true" : undefined}
                     className={`block rounded-lg border px-3 py-2 transition-colors ${
                       activeCategory === category.key
