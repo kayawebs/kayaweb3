@@ -9666,6 +9666,39 @@ const READY_TOOL_COPY = {
 
 const EXTRA_READY_TOOL_COPY = {
   en: {
+    "rmb-uppercase-converter": {
+      title: "RMB Uppercase Converter",
+      seoTitle: "RMB Uppercase Converter | Kaya",
+      description: "Convert numeric RMB amounts into Chinese uppercase money text for invoices and receipts.",
+      intro:
+        "Use this RMB uppercase converter to turn a numeric amount into formal Chinese uppercase money text for invoices, receipts, reimbursement forms, and accounting notes.",
+      exampleHeading: "Example Usage",
+      explanationHeading: "RMB Uppercase Converter Explained",
+      faqHeading: "FAQ",
+      relatedHeading: "Related Tools",
+      internalLinksHeading: "Internal Links",
+      example: [
+        "Convert 1234.56 into 人民币壹仟贰佰叁拾肆元伍角陆分.",
+        "Check invoice amount text before filling a reimbursement or receipt form.",
+        "Paste amounts with commas or currency symbols and copy the formal uppercase result.",
+      ],
+      explanation:
+        "Chinese uppercase money text is commonly used on invoices, receipts, checks, and accounting documents because the financial characters are harder to alter than regular numerals. This tool converts a numeric RMB amount into the formal uppercase style with 元, 角, and 分 units. It handles common inputs with commas or currency symbols, rounds extra decimal places to the nearest fen, and runs entirely in the browser. It is useful when you need a quick reference before filling a form, preparing a reimbursement note, or checking that a written amount matches the numeric value.",
+      faq: [
+        {
+          question: "Does this tool support cents?",
+          answer: "Yes. It converts decimal places into 角 and 分, rounding extra decimals to the nearest fen.",
+        },
+        {
+          question: "Can I paste amounts with ¥ or commas?",
+          answer: "Yes. Currency symbols, RMB text, spaces, and commas are ignored before conversion.",
+        },
+        {
+          question: "Is the conversion done on a server?",
+          answer: "No. The conversion runs locally in your browser.",
+        },
+      ],
+    },
     "pdf-to-image": {
       title: "PDF to Image Converter",
       seoTitle: "PDF to Image Converter | Kaya",
@@ -9833,6 +9866,39 @@ const EXTRA_READY_TOOL_COPY = {
     },
   },
   zh: {
+    "rmb-uppercase-converter": {
+      title: "人民币金额大写转换器",
+      seoTitle: "人民币金额大写转换器 | Kaya",
+      description: "把数字金额转换为发票、收据和报销单常用的人民币中文大写金额。",
+      intro:
+        "这个人民币金额大写转换器可以把数字金额快速转换为正式的中文大写金额，适合开发票、写收据、填报销单或核对财务文本。",
+      exampleHeading: "使用示例",
+      explanationHeading: "人民币金额大写转换器说明",
+      faqHeading: "常见问题",
+      relatedHeading: "相关工具",
+      internalLinksHeading: "站内链接建议",
+      example: [
+        "把 1234.56 转换为 人民币壹仟贰佰叁拾肆元伍角陆分。",
+        "开发票、收据或报销单前，快速核对金额大写是否正确。",
+        "粘贴带 ¥、逗号或 RMB 的金额，直接复制正式大写结果。",
+      ],
+      explanation:
+        "人民币金额大写常用于发票、收据、支票、报销和财务凭证，因为壹、贰、叁、拾、佰、仟等大写数字比普通数字更不容易被涂改。这个工具会把数字金额转换成带有元、角、分单位的正式中文大写金额，并支持常见的逗号、货币符号和 RMB 前缀输入。超过两位小数时会按分进行四舍五入。整个转换过程都在浏览器本地完成，适合在填写票据或核对财务文本前快速使用。",
+      faq: [
+        {
+          question: "支持角和分吗？",
+          answer: "支持。小数第一位会转换为角，第二位转换为分，超过两位会按分四舍五入。",
+        },
+        {
+          question: "可以输入 ¥ 或逗号吗？",
+          answer: "可以。工具会自动忽略货币符号、RMB、空格和逗号。",
+        },
+        {
+          question: "金额会上传吗？",
+          answer: "不会。转换逻辑完全在当前浏览器里执行。",
+        },
+      ],
+    },
     "pdf-to-image": {
       title: "PDF 转图片工具",
       seoTitle: "PDF 转图片工具 | Kaya",

@@ -71,7 +71,7 @@ function titleFromSlug(slug: string) {
       if (part === "json" || part === "yaml" || part === "xml" || part === "url" || part === "jwt") {
         return part.toUpperCase();
       }
-      if (part === "btc" || part === "evm" || part === "psbt" || part === "pdf" || part === "jpg" || part === "png" || part === "md5" || part === "sha256" || part === "roi" || part === "vat" || part === "ai") {
+      if (part === "btc" || part === "evm" || part === "psbt" || part === "pdf" || part === "jpg" || part === "png" || part === "md5" || part === "sha256" || part === "roi" || part === "vat" || part === "ai" || part === "rmb") {
         return part.toUpperCase();
       }
       return part.charAt(0).toUpperCase() + part.slice(1);
@@ -146,6 +146,7 @@ const SUMMARY_OVERRIDES_EN: Record<string, string> = {
   "net-profit-margin-calculator": "Calculate net profit and net profit margin from revenue and expenses.",
   "break-even-calculator": "Calculate break-even units and revenue from fixed and variable costs.",
   "stock-average-price-calculator": "Calculate stock average cost basis, total shares, and unrealized profit or loss.",
+  "rmb-uppercase-converter": "Convert numeric RMB amounts into Chinese uppercase money text for invoices and receipts.",
   "evm-address-checker": "Validate Ethereum and EVM addresses, including checksum formatting.",
   "evm-checksum-converter": "Convert an EVM address into its EIP-55 checksum format instantly.",
   "token-decimals-converter": "Convert token display amounts to raw integer units using token decimals.",
@@ -371,6 +372,7 @@ const SUMMARY_OVERRIDES_ZH: Record<string, string> = {
   "pdf-compress-tool": "对 PDF 做一次轻量浏览器端结构优化并比较体积变化。",
   "file-size-converter": "在字节、KB、MB、GB、TB 之间换算文件大小。",
   "unit-converter-bytes": "把原始字节值换算成十进制和二进制存储单位。",
+  "rmb-uppercase-converter": "把数字人民币金额转换为发票和收据常用的中文大写金额。",
 };
 
 function basePhraseFromSlug(slug: string) {
@@ -503,6 +505,7 @@ function buildTools(category: ToolCategoryKey, slugs: string[]): ToolDefinition[
     "savings-growth-calculator",
     "net-profit-margin-calculator",
     "break-even-calculator",
+    "rmb-uppercase-converter",
     "evm-address-checker",
     "evm-checksum-converter",
     "token-decimals-converter",
@@ -672,6 +675,7 @@ export const tools: ToolDefinition[] = [
     "savings-growth-calculator",
     "net-profit-margin-calculator",
     "break-even-calculator",
+    "rmb-uppercase-converter",
   ]),
   ...buildTools("web3", [
     "evm-address-checker",

@@ -103,6 +103,7 @@ import RandomGradientGeneratorTool from "@/components/tools/RandomGradientGenera
 import RandomColorGeneratorTool from "@/components/tools/RandomColorGeneratorTool";
 import RandomNumberGeneratorTool from "@/components/tools/RandomNumberGeneratorTool";
 import RandomPasswordGeneratorTool from "@/components/tools/RandomPasswordGeneratorTool";
+import RmbUppercaseConverterTool from "@/components/tools/RmbUppercaseConverterTool";
 import DiceRollSimulatorTool from "@/components/tools/DiceRollSimulatorTool";
 import RecoverAddressFromSignatureTool from "@/components/tools/RecoverAddressFromSignatureTool";
 import RegexReplaceTool from "@/components/tools/RegexReplaceTool";
@@ -250,6 +251,7 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
     "savings-growth-calculator": <SavingsGrowthCalculatorTool locale={locale} />,
     "net-profit-margin-calculator": <NetProfitMarginCalculatorTool locale={locale} />,
     "break-even-calculator": <BreakEvenCalculatorTool locale={locale} />,
+    "rmb-uppercase-converter": <RmbUppercaseConverterTool locale={locale} />,
     "evm-address-checker": <EvmAddressCheckerTool locale={locale} />,
     "evm-checksum-converter": <EvmChecksumConverterTool locale={locale} />,
     "token-decimals-converter": <TokenDecimalsConverterTool locale={locale} />,
