@@ -1173,33 +1173,33 @@ const READY_TOOL_COPY = {
     "loan-payment-calculator": {
       title: "Loan Payment Calculator",
       seoTitle: "Loan Payment Calculator | Kaya",
-      description: "Estimate monthly loan payments, total interest, and total repayment.",
+      description: "Compare equal-payment and equal-principal installment loans with total interest and schedule preview.",
       intro:
-        "Use this loan payment calculator to estimate monthly payments from a loan amount, annual interest rate, and repayment term.",
+        "Use this loan payment calculator to compare installment repayment methods, including equal principal and interest, equal principal, total interest, and schedule preview.",
       exampleHeading: "Example Usage",
       explanationHeading: "Loan Payment Calculator Explained",
       faqHeading: "FAQ",
       relatedHeading: "Related Tools",
       internalLinksHeading: "Internal Links",
       example: [
-        "Calculate the monthly payment for a personal loan over 5 years.",
-        "See how total interest changes when the repayment term gets longer.",
-        "Compare borrowing costs before choosing between loan options.",
+        "Calculate total interest for a 60-installment personal loan.",
+        "Compare equal principal and interest against equal principal repayment.",
+        "Preview principal, interest, payment, and remaining balance for each period.",
       ],
       explanation:
-        "A loan payment calculator helps you estimate how much you would pay each month on an amortized loan. After entering the loan amount, annual interest rate, and loan term, the tool calculates the monthly payment, total amount repaid, and total interest cost. This is useful for personal loans, auto loans, education financing, and general borrowing comparisons. Instead of guessing from the headline rate alone, you can see how repayment length changes both affordability and total interest. That makes it easier to compare loan offers and avoid underestimating the real cost of borrowing.",
+        "A loan payment calculator helps you estimate installment repayment cost before taking a loan. This version supports equal principal and interest, where each payment stays fixed, and equal principal, where the principal part is fixed and payments usually decrease over time. After entering the loan amount, annual interest rate, installment count, and repayment method, the tool calculates total repayment, total interest, first and last payment, and a schedule preview. It is useful for personal loans, auto loans, consumer installments, and comparing the real cost of borrowing beyond the headline annual rate.",
       faq: [
         {
-          question: "What does amortized loan mean?",
-          answer: "It means each monthly payment covers both interest and principal until the balance is paid off.",
+          question: "What is equal principal and interest?",
+          answer: "It is an amortized method where each installment is the same amount, while the principal share rises and interest share falls over time.",
         },
         {
-          question: "Why does a longer term reduce monthly payments?",
-          answer: "Because the balance is spread across more payments, although total interest often becomes higher.",
+          question: "What is equal principal repayment?",
+          answer: "It repays the same principal amount every period, so the payment usually starts higher and decreases as interest falls.",
         },
         {
-          question: "Can this calculator handle zero interest?",
-          answer: "Yes. In that case the payment is just the loan amount divided by the total number of months.",
+          question: "Does this include loan fees?",
+          answer: "No. It focuses on principal and interest only, not fees, taxes, penalties, or early repayment changes.",
         },
       ],
     },
@@ -5931,33 +5931,33 @@ const READY_TOOL_COPY = {
     "loan-payment-calculator": {
       title: "贷款月供计算器",
       seoTitle: "贷款月供计算器 | Kaya",
-      description: "估算贷款月供、总利息和总还款额。",
+      description: "按期数计算等额本息、等额本金的每期还款、总利息和还款计划。",
       intro:
-        "这个贷款月供计算器可以根据贷款金额、年利率和还款年限，估算每月还款额、总还款额和总利息。",
+        "这个贷款月供计算器可以按还款期数比较等额本息和等额本金，计算每期还款、总还款额、总利息和还款计划预览。",
       exampleHeading: "使用示例",
       explanationHeading: "贷款月供计算器说明",
       faqHeading: "常见问题",
       relatedHeading: "相关工具",
       internalLinksHeading: "站内链接建议",
       example: [
-        "计算一笔 5 年期个人贷款的每月还款金额。",
-        "查看延长贷款期限后总利息会增加多少。",
-        "在多个贷款方案之间快速比较借款成本。",
+        "计算一笔 60 期个人贷款的总利息。",
+        "比较等额本息和等额本金两种还款方式的总成本。",
+        "查看每期本金、利息、还款额和剩余本金预览。",
       ],
       explanation:
-        "贷款月供计算器用于估算等额分期贷款的每月还款情况。输入贷款金额、年利率和还款期数后，你可以看到每月月供、总还款额和整个周期内的利息成本。它适合用于个人贷款、车贷、教育贷款等场景。很多时候只看利率本身不够，因为还款期限也会明显影响总成本。通过把月供和总利息一起展示，这个工具可以帮助你更直观地判断贷款方案是否合适。",
+        "贷款月供计算器用于估算分期贷款的真实还款成本。这个版本支持等额本息和等额本金两种常见方式：等额本息每期还款额固定，本金占比逐步上升；等额本金每期偿还固定本金，前期还款额较高，后期逐步下降。输入贷款金额、年利率、还款期数和还款方式后，工具会计算首期还款、末期还款、总还款额、总利息，并给出还款计划预览。它适合个人贷款、车贷、消费分期和借款方案对比。",
       faq: [
         {
-          question: "什么是等额分期贷款？",
-          answer: "指每期还款里同时包含本金和利息，并在整个周期内逐步把贷款余额还清。",
+          question: "什么是等额本息？",
+          answer: "等额本息是每期还款额相同的方式，其中本金占比逐步增加，利息占比逐步减少。",
         },
         {
-          question: "为什么期限更长月供更低？",
-          answer: "因为本金被分摊到更多期数里，但总利息通常也会因此增加。",
+          question: "什么是等额本金？",
+          answer: "等额本金是每期偿还相同本金，利息随剩余本金减少，因此还款额通常逐期下降。",
         },
         {
-          question: "零利率贷款也能算吗？",
-          answer: "可以。零利率时，月供就是贷款本金除以总月数。",
+          question: "这里包含手续费吗？",
+          answer: "不包含。当前只计算本金和利息，不包含手续费、税费、罚息或提前还款变化。",
         },
       ],
     },
@@ -9666,6 +9666,39 @@ const READY_TOOL_COPY = {
 
 const EXTRA_READY_TOOL_COPY = {
   en: {
+    "bmi-calculator": {
+      title: "BMI Calculator",
+      seoTitle: "BMI Calculator | Kaya",
+      description: "Calculate body mass index from metric or imperial height and weight inputs.",
+      intro:
+        "Use this BMI calculator to estimate body mass index from height and weight, with metric and imperial inputs plus a normal weight range reference.",
+      exampleHeading: "Example Usage",
+      explanationHeading: "BMI Calculator Explained",
+      faqHeading: "FAQ",
+      relatedHeading: "Related Tools",
+      internalLinksHeading: "Internal Links",
+      example: [
+        "Calculate BMI from 70 kg and 175 cm.",
+        "Switch to imperial units and calculate BMI from pounds, feet, and inches.",
+        "Check the normal BMI weight range for the entered height.",
+      ],
+      explanation:
+        "BMI, or body mass index, is a simple screening number calculated from weight and height. The metric formula is weight in kilograms divided by height in meters squared. This calculator supports both metric and imperial inputs, shows the BMI category, and estimates the weight range that corresponds to a normal BMI for the entered height. BMI is useful for a quick reference, but it is not a medical diagnosis. It does not directly measure body fat, muscle mass, age-related factors, or individual health risk.",
+      faq: [
+        {
+          question: "What is the BMI formula?",
+          answer: "Metric BMI is weight in kilograms divided by height in meters squared. Imperial BMI uses 703 times pounds divided by inches squared.",
+        },
+        {
+          question: "Is BMI a diagnosis?",
+          answer: "No. BMI is a screening metric, not a diagnosis or a complete measure of health.",
+        },
+        {
+          question: "Does this support imperial units?",
+          answer: "Yes. You can switch between metric and imperial inputs.",
+        },
+      ],
+    },
     "rmb-uppercase-converter": {
       title: "RMB Uppercase Converter",
       seoTitle: "RMB Uppercase Converter | Kaya",
@@ -9866,6 +9899,39 @@ const EXTRA_READY_TOOL_COPY = {
     },
   },
   zh: {
+    "bmi-calculator": {
+      title: "BMI 计算器",
+      seoTitle: "BMI 计算器 | Kaya",
+      description: "根据公制或英制身高体重计算 BMI，并显示分类和正常体重范围。",
+      intro:
+        "这个 BMI 计算器可以根据身高和体重快速估算身体质量指数，支持公制和英制输入，并给出分类与正常 BMI 对应体重范围。",
+      exampleHeading: "使用示例",
+      explanationHeading: "BMI 计算器说明",
+      faqHeading: "常见问题",
+      relatedHeading: "相关工具",
+      internalLinksHeading: "站内链接建议",
+      example: [
+        "用 70 kg 和 175 cm 快速计算 BMI。",
+        "切换到英制，用磅、英尺和英寸计算 BMI。",
+        "查看当前身高下正常 BMI 对应的体重范围。",
+      ],
+      explanation:
+        "BMI，也就是身体质量指数，是根据身高和体重计算出的一个快速筛查指标。公制公式是体重千克数除以身高米数的平方。这个工具支持公制和英制输入，会显示 BMI 数值、分类以及当前身高下正常 BMI 对应的体重范围。BMI 适合做初步参考，但它不是医学诊断，也不能单独反映体脂率、肌肉量、年龄因素或个体健康风险。",
+      faq: [
+        {
+          question: "BMI 公式是什么？",
+          answer: "公制 BMI 是体重 kg 除以身高 m 的平方；英制 BMI 是 703 乘以体重 lb 再除以身高 inch 的平方。",
+        },
+        {
+          question: "BMI 能代表健康状态吗？",
+          answer: "不能完全代表。BMI 只是快速筛查指标，不是医学诊断。",
+        },
+        {
+          question: "支持英制单位吗？",
+          answer: "支持，可以在公制和英制之间切换。",
+        },
+      ],
+    },
     "rmb-uppercase-converter": {
       title: "人民币金额大写转换器",
       seoTitle: "人民币金额大写转换器 | Kaya",

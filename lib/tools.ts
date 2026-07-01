@@ -71,7 +71,7 @@ function titleFromSlug(slug: string) {
       if (part === "json" || part === "yaml" || part === "xml" || part === "url" || part === "jwt") {
         return part.toUpperCase();
       }
-      if (part === "btc" || part === "evm" || part === "psbt" || part === "pdf" || part === "jpg" || part === "png" || part === "md5" || part === "sha256" || part === "roi" || part === "vat" || part === "ai" || part === "rmb") {
+      if (part === "btc" || part === "evm" || part === "psbt" || part === "pdf" || part === "jpg" || part === "png" || part === "md5" || part === "sha256" || part === "roi" || part === "vat" || part === "ai" || part === "rmb" || part === "bmi") {
         return part.toUpperCase();
       }
       return part.charAt(0).toUpperCase() + part.slice(1);
@@ -135,7 +135,7 @@ const SUMMARY_OVERRIDES_EN: Record<string, string> = {
   "compound-interest-calculator": "Estimate compound growth with recurring monthly contributions.",
   "dca-investment-calculator": "Calculate average cost, units accumulated, and current value from recurring buys.",
   "simple-interest-calculator": "Calculate simple interest and total repayment from principal, rate, and time.",
-  "loan-payment-calculator": "Estimate monthly loan payments, total paid, and total interest.",
+  "loan-payment-calculator": "Compare installment loan interest with equal-payment and equal-principal methods.",
   "mortgage-calculator": "Estimate mortgage monthly payments, loan principal, and total interest.",
   "tax-calculator": "Calculate tax amount and total price from a pre-tax value and rate.",
   "vat-calculator": "Calculate VAT amount and gross total from a net amount instantly.",
@@ -211,6 +211,7 @@ const SUMMARY_OVERRIDES_EN: Record<string, string> = {
   "click-speed-test": "Measure how many clicks you can make in a short timed test.",
   "reaction-time-test": "Test your visual reaction speed by clicking as soon as the panel changes.",
   "typing-speed-test": "Measure typing speed, accuracy, and completion time in the browser.",
+  "bmi-calculator": "Calculate BMI from metric or imperial height and weight inputs.",
   "memory-game": "Play a simple card matching memory game with move counting.",
   "2048-game": "Play a browser version of 2048 and merge tiles toward the winning block.",
   "sudoku-generator": "Generate a browser sudoku puzzle with editable cells and answer checking.",
@@ -283,7 +284,7 @@ const SUMMARY_OVERRIDES_ZH: Record<string, string> = {
   "compound-interest-calculator": "估算带每月追加投入的复利增长结果。",
   "dca-investment-calculator": "根据多次定投价格计算平均成本、累计数量和当前市值。",
   "simple-interest-calculator": "根据本金、利率和时间计算单利与总金额。",
-  "loan-payment-calculator": "估算贷款月供、总支付金额和总利息。",
+  "loan-payment-calculator": "按期数比较等额本息、等额本金的总利息和还款计划。",
   "mortgage-calculator": "估算房贷月供、贷款本金和总利息。",
   "tax-calculator": "根据税前金额和税率计算税额与含税总价。",
   "vat-calculator": "根据净额即时计算 VAT 税额与含税总额。",
@@ -358,6 +359,7 @@ const SUMMARY_OVERRIDES_ZH: Record<string, string> = {
   "click-speed-test": "测试短时间内的点击速度和每秒点击数。",
   "reaction-time-test": "在面板变色时立即点击，测试视觉反应速度。",
   "typing-speed-test": "在浏览器里测试打字速度、准确率和完成时间。",
+  "bmi-calculator": "根据公制或英制身高体重快速计算 BMI。",
   "memory-game": "玩一个简单的卡片配对记忆游戏并统计步数。",
   "2048-game": "在浏览器里玩 2048 方块合并游戏并冲击目标数字。",
   "sudoku-generator": "生成一个可填写的数独题目，并统计填写正确情况。",
@@ -570,6 +572,7 @@ function buildTools(category: ToolCategoryKey, slugs: string[]): ToolDefinition[
     "click-speed-test",
     "reaction-time-test",
     "typing-speed-test",
+    "bmi-calculator",
     "memory-game",
     "2048-game",
     "sudoku-generator",
@@ -726,6 +729,7 @@ export const tools: ToolDefinition[] = [
     "typing-speed-test",
     "click-speed-test",
     "reaction-time-test",
+    "bmi-calculator",
     "number-guessing-game",
     "coin-flip-simulator",
     "dice-roll-simulator",

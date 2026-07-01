@@ -9,6 +9,7 @@ import AiTokenEstimatorTool from "@/components/tools/AiTokenEstimatorTool";
 import Base64EncodeDecodeTool from "@/components/tools/Base64EncodeDecodeTool";
 import Base64ToImageTool from "@/components/tools/Base64ToImageTool";
 import BatchBtcAddressGeneratorTool from "@/components/tools/BatchBtcAddressGeneratorTool";
+import BmiCalculatorTool from "@/components/tools/BmiCalculatorTool";
 import BtcAddressGeneratorTool from "@/components/tools/BtcAddressGeneratorTool";
 import BtcAddressValidatorTool from "@/components/tools/BtcAddressValidatorTool";
 import BtcChangeOutputCalculatorTool from "@/components/tools/BtcChangeOutputCalculatorTool";
@@ -316,6 +317,7 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
     "click-speed-test": <ClickSpeedTestTool locale={locale} />,
     "reaction-time-test": <ReactionTimeTestTool locale={locale} />,
     "typing-speed-test": <TypingSpeedTestTool locale={locale} />,
+    "bmi-calculator": <BmiCalculatorTool locale={locale} />,
     "memory-game": <MemoryGameTool locale={locale} />,
     "2048-game": <Game2048Tool locale={locale} />,
     "sudoku-generator": <SudokuGeneratorTool locale={locale} />,
