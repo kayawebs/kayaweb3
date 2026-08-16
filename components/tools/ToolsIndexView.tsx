@@ -1,205 +1,244 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { MouseEvent } from "react";
 import Link from "next/link";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 
 import { readRecentToolSlugs } from "@/components/tools/recent-tools";
 import ToolLocaleSwitcher from "@/components/tools/ToolLocaleSwitcher";
-import { getLocalizedTool, getLocalizedToolCollection, getToolPath, getToolUiText, type ToolLocale } from "@/lib/tool-i18n";
+import { getLocalizedTool, getLocalizedToolCollection, getToolPath, type ToolLocale } from "@/lib/tool-i18n";
+import type { ToolCategoryKey, ToolDefinition } from "@/lib/tools";
 
 type ToolsIndexViewProps = {
   locale: ToolLocale;
 };
 
+type LocalizedTool = ToolDefinition;
+
+const categoryVisuals: Record<ToolCategoryKey, { symbol: string; tone: string; ink: string }> = {
+  web3: { symbol: "◇", tone: "#e7e2ff", ink: "#5c4fc0" },
+  ai: { symbol: "✦", tone: "#f8e5cb", ink: "#a85121" },
+  "date-time": { symbol: "◷", tone: "#dbeeea", ink: "#04745b" },
+  dev: { symbol: "⌘", tone: "#dfe9f7", ink: "#35679d" },
+  finance: { symbol: "¤", tone: "#e7efd8", ink: "#557f28" },
+  mini: { symbol: "◌", tone: "#f6dfeb", ink: "#9a3f70" },
+  "image-file": { symbol: "▧", tone: "#e9e5dc", ink: "#6b6558" },
+};
+
+const text = {
+  en: {
+    eyebrow: "Kaya toolbox",
+    title: "Useful work, without the hunt.",
+    intro: "A browsable collection of browser-native utilities for developers, chains, files, finance, and everyday work. Most tools run locally. No accounts, no detours.",
+    search: "Find a tool: timestamp, JSON, BTC, PDF...",
+    all: "All tools",
+    recent: "Recently opened",
+    recentDescription: "Kept only in this browser.",
+    filters: "Collections",
+    results: "tools shown",
+    available: "Ready",
+    planned: "In progress",
+    open: "Open tool",
+    privacy: "Local-first where possible",
+  },
+  zh: {
+    eyebrow: "Kaya 工具箱",
+    title: "找到工具，直接开始做事。",
+    intro: "面向开发、链上、文件、金融和日常工作的浏览器工具集合。大部分工具只在本地运行，不需要账号，也不需要绕路。",
+    search: "搜索工具：时间戳、JSON、BTC、PDF...",
+    all: "全部工具",
+    recent: "最近打开",
+    recentDescription: "仅保存在当前浏览器中。",
+    filters: "工具集合",
+    results: "个工具",
+    available: "已可用",
+    planned: "建设中",
+    open: "打开工具",
+    privacy: "尽可能在本地完成处理",
+  },
+} as const;
+
+function toolAction(slug: string, locale: ToolLocale) {
+  const en = [
+    ["converter", "Convert formats"],
+    ["calculator", "Calculate a result"],
+    ["generator", "Generate a value"],
+    ["formatter", "Clean and format"],
+    ["minifier", "Compress input"],
+    ["validator", "Validate input"],
+    ["checker", "Check validity"],
+    ["decoder", "Decode into fields"],
+    ["encoder", "Encode a payload"],
+    ["parser", "Parse structured data"],
+    ["analyzer", "Inspect key signals"],
+    ["viewer", "Inspect data"],
+    ["estimator", "Estimate an outcome"],
+    ["builder", "Build a payload"],
+    ["tester", "Run a quick test"],
+    ["game", "Play in browser"],
+  ] as const;
+  const zh = [
+    ["converter", "转换格式"],
+    ["calculator", "计算结果"],
+    ["generator", "生成内容"],
+    ["formatter", "整理并格式化"],
+    ["minifier", "压缩输入内容"],
+    ["validator", "校验输入"],
+    ["checker", "检查有效性"],
+    ["decoder", "解码为可读字段"],
+    ["encoder", "编码数据"],
+    ["parser", "解析结构化数据"],
+    ["analyzer", "分析关键数据"],
+    ["viewer", "查看数据"],
+    ["estimator", "估算结果"],
+    ["builder", "构建数据"],
+    ["tester", "快速测试"],
+    ["game", "浏览器小游戏"],
+  ] as const;
+  const match = (locale === "zh" ? zh : en).find(([needle]) => slug.includes(needle));
+  if (match) return match[1];
+  if (slug === "paste") return locale === "zh" ? "创建临时分享链接" : "Create a temporary link";
+  return locale === "zh" ? "打开并立即使用" : "Open and use instantly";
+}
+
+function ToolGlyph({ category }: { category: ToolCategoryKey }) {
+  const visual = categoryVisuals[category];
+  return (
+    <span className="tool-glyph" style={{ "--tool-tone": visual.tone, "--tool-ink": visual.ink } as CSSProperties} aria-hidden="true">
+      {visual.symbol}
+    </span>
+  );
+}
+
+function ToolCard({ tool, locale }: { tool: LocalizedTool; locale: ToolLocale }) {
+  const visual = categoryVisuals[tool.category];
+  const label = text[locale];
+  const toolStyle = { "--tool-tone": visual.tone, "--tool-ink": visual.ink } as CSSProperties;
+
+  return (
+    <Link href={getToolPath(locale, tool.slug)} className="tool-card" style={toolStyle}>
+      <div className="flex items-start justify-between gap-3">
+        <ToolGlyph category={tool.category} />
+        <span className={`tool-status ${tool.status === "ready" ? "tool-status-ready" : ""}`}>
+          {tool.status === "ready" ? label.available : label.planned}
+        </span>
+      </div>
+      <div className="mt-5">
+        <h2 className="text-[1rem] font-semibold leading-5 tracking-[-0.025em] text-[var(--foreground)]">{tool.name}</h2>
+        <p className="mt-2 text-sm leading-5 text-[var(--muted)]">{toolAction(tool.slug, locale)}</p>
+      </div>
+      <div className="mt-5 flex items-center justify-between gap-3 border-t border-[var(--line)] pt-3">
+        <span className="truncate font-mono text-[0.68rem] uppercase tracking-[0.08em] text-[var(--tool-ink)]">{tool.category}</span>
+        <span className="tool-open">{label.open} <span aria-hidden="true">↗</span></span>
+      </div>
+    </Link>
+  );
+}
+
 export default function ToolsIndexView({ locale }: ToolsIndexViewProps) {
-  const baseSections = getLocalizedToolCollection(locale);
-  const ui = getToolUiText(locale);
+  const sections = getLocalizedToolCollection(locale);
+  const labels = text[locale];
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<ToolCategoryKey | "all">("all");
   const [recentSlugs, setRecentSlugs] = useState<string[]>([]);
-  const sections = useMemo(() => {
-    const recentItems = recentSlugs
-      .map((slug) => getLocalizedTool(slug, locale))
-      .filter((item): item is NonNullable<ReturnType<typeof getLocalizedTool>> => Boolean(item));
 
-    if (recentItems.length === 0) {
-      return baseSections;
-    }
-
-    return [
-      {
-        key: "recent",
-        title: ui.recentTitle,
-        description: ui.recentDescription,
-        count: recentItems.length,
-        items: recentItems,
-      },
-      ...baseSections,
-    ];
-  }, [baseSections, locale, recentSlugs, ui.recentDescription, ui.recentTitle]);
-  const [activeCategory, setActiveCategory] = useState<string>(() => baseSections[0]?.key ?? "");
+  const allTools = useMemo(
+    () => sections.flatMap((section) => section.items).filter((tool): tool is LocalizedTool => Boolean(tool)),
+    [sections],
+  );
+  const recentTools = useMemo(
+    () => recentSlugs.map((slug) => getLocalizedTool(slug, locale)).filter((tool): tool is LocalizedTool => Boolean(tool)),
+    [locale, recentSlugs],
+  );
+  const filteredTools = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return allTools.filter((tool) => {
+      const isInCategory = activeCategory === "all" || tool.category === activeCategory;
+      const searchTarget = `${tool.name} ${tool.slug} ${tool.summary} ${tool.targetKeyword}`.toLowerCase();
+      return isInCategory && (!normalizedQuery || searchTarget.includes(normalizedQuery));
+    });
+  }, [activeCategory, allTools, query]);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      setRecentSlugs(readRecentToolSlugs());
-    });
-
+    const frame = window.requestAnimationFrame(() => setRecentSlugs(readRecentToolSlugs()));
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
-  useEffect(() => {
-    const sectionElements = sections
-      .map((section) => document.getElementById(section.key))
-      .filter((element): element is HTMLElement => Boolean(element));
-
-    if (sectionElements.length === 0) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-        if (visibleEntries[0]?.target.id) {
-          setActiveCategory(visibleEntries[0].target.id);
-        }
-      },
-      {
-        rootMargin: "-80px 0px -55% 0px",
-        threshold: [0.15, 0.35, 0.6],
-      },
-    );
-
-    sectionElements.forEach((element) => observer.observe(element));
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [sections]);
-
-  const handleCategoryClick = (event: MouseEvent<HTMLAnchorElement>, categoryKey: string) => {
-    event.preventDefault();
-    setActiveCategory(categoryKey);
-    document.getElementById(categoryKey)?.scrollIntoView({ behavior: "smooth", block: "start" });
-    window.history.replaceState(null, "", getToolPath(locale));
-  };
-
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans">
-      <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-6 pb-16 pt-12 sm:px-10 sm:pt-16">
-        <div className="relative">
-          <section className="terminal-panel space-y-5">
-            <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-              <span className="terminal-accent">~/tools</span>
-              <span>{ui.indexCommand}</span>
-            </div>
-            <header className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h1 className="text-2xl font-semibold tracking-tight">{ui.indexH1}</h1>
-                <ToolLocaleSwitcher locale={locale} />
-              </div>
-              <p className="max-w-3xl text-sm leading-6 text-[var(--foreground)]/85">{ui.indexIntro}</p>
-            </header>
+    <main className="tools-page">
+      <section className="tools-hero">
+        <div className="max-w-3xl">
+          <p className="eyebrow">{labels.eyebrow}</p>
+          <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+            <h1>{labels.title}</h1>
+            <ToolLocaleSwitcher locale={locale} />
+          </div>
+          <p className="tools-hero-intro">{labels.intro}</p>
+        </div>
+        <div className="tools-search-shell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.1 4.1" /></svg>
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={labels.search} aria-label={labels.search} />
+          <span className="hidden font-mono text-[0.68rem] text-[var(--muted)] sm:inline">{filteredTools.length} {labels.results}</span>
+        </div>
+      </section>
 
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 min-[1680px]:hidden">
-              {sections.map((category) => (
-                <a
-                  key={category.key}
-                  href={`#${category.key}`}
-                  onClick={(event) => handleCategoryClick(event, category.key)}
-                  aria-current={activeCategory === category.key ? "true" : undefined}
-                  className="rounded-lg border border-[var(--terminal-border)] bg-[var(--terminal-panel-bg)]/40 px-4 py-3 transition-colors hover:border-[var(--terminal-accent)]"
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold">{category.title}</span>
-                    <span className="text-xs font-mono text-[var(--terminal-muted)]">{category.count}</span>
-                  </div>
-                  <p className="mt-2 text-xs leading-5 text-[var(--terminal-muted)]">{category.description}</p>
-                </a>
-              ))}
-            </div>
-          </section>
-
-          <aside className="absolute left-[calc(100%+1.5rem)] top-0 hidden h-full w-56 min-[1680px]:block">
-            <div className="sticky top-0 space-y-3 rounded-xl border border-[var(--terminal-border)] bg-[var(--terminal-panel-bg)]/78 p-3 shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-sm">
-              <div className="flex items-center justify-between gap-3 border-b border-[var(--terminal-border)] px-1 pb-2 text-xs font-mono text-[var(--terminal-muted)]">
-                <span className="terminal-accent">~/tools/nav</span>
-                <span>{sections.length}</span>
-              </div>
-              <nav aria-label="Tool categories" className="space-y-2">
-                {sections.map((category) => (
-                  <a
-                    key={category.key}
-                    href={`#${category.key}`}
-                    onClick={(event) => handleCategoryClick(event, category.key)}
-                    aria-current={activeCategory === category.key ? "true" : undefined}
-                    className={`block rounded-lg border px-3 py-2 transition-colors ${
-                      activeCategory === category.key
-                        ? "border-[var(--terminal-accent)] bg-[var(--terminal-panel-bg)]/70 shadow-[inset_0_0_0_1px_rgba(159,255,224,0.15)]"
-                        : "border-[var(--terminal-border)] bg-[var(--terminal-panel-bg)]/25 hover:border-[var(--terminal-accent)] hover:bg-[var(--terminal-panel-bg)]/55"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className={`text-sm font-semibold leading-5 ${activeCategory === category.key ? "text-[var(--terminal-accent)]" : ""}`}>{category.title}</span>
-                      <span className="shrink-0 text-[11px] font-mono text-[var(--terminal-muted)]">{category.count}</span>
-                    </div>
-                    <p className="mt-1 text-[11px] leading-5 text-[var(--terminal-muted)]">{category.description}</p>
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </aside>
-
-          <div className="mt-8 space-y-6">
-            {sections.map((category) => (
-              <section key={category.key} id={category.key} className="terminal-panel space-y-4 scroll-mt-24">
-                <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-                  <span className="terminal-accent">~/tools/{category.key}</span>
-                  <span>
-                    {category.count} {ui.entries}
-                  </span>
-                </div>
-                <div className="space-y-2">
-                  <h2 className="text-xl font-semibold tracking-tight">{category.title}</h2>
-                  <p className="text-sm text-[var(--terminal-muted)]">{category.description}</p>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {category.items.map((tool) => {
-                    if (!tool) return null;
-
-                    return (
-                      <Link
-                        key={tool.slug}
-                        href={getToolPath(locale, tool.slug)}
-                        className="group rounded-lg border border-[var(--terminal-border)] bg-[var(--terminal-panel-bg)]/30 px-3 py-3 transition-colors hover:border-[var(--terminal-accent)] hover:bg-[var(--terminal-panel-bg)]/60"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <h3 className="text-sm font-semibold leading-5 text-[var(--foreground)]">{tool.name}</h3>
-                          <span
-                            className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-mono ${
-                              tool.status === "ready"
-                                ? "border border-green-500/40 text-green-400"
-                                : "border border-[var(--terminal-border)] text-[var(--terminal-muted)]"
-                            }`}
-                          >
-                            {tool.status === "ready" ? ui.statusLive : ui.statusPlanned}
-                          </span>
-                        </div>
-                        <p className="mt-2 line-clamp-3 text-xs leading-5 text-[var(--terminal-muted)]">{tool.summary}</p>
-                        <div className="mt-3 text-[11px] font-mono text-[var(--terminal-accent)] group-hover:text-[var(--foreground)]">
-                          {getToolPath(locale, tool.slug)}
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </section>
+      {recentTools.length > 0 ? (
+        <section className="tools-recent">
+          <div>
+            <p className="eyebrow">{labels.recent}</p>
+            <p className="mt-1 text-sm text-[var(--muted)]">{labels.recentDescription}</p>
+          </div>
+          <div className="tools-recent-links">
+            {recentTools.slice(0, 5).map((tool) => (
+              <Link key={tool.slug} href={getToolPath(locale, tool.slug)} className="recent-tool-link">
+                <ToolGlyph category={tool.category} />
+                <span>{tool.name}</span>
+              </Link>
             ))}
           </div>
-        </div>
-      </main>
-    </div>
+        </section>
+      ) : null}
+
+      <div className="tools-catalog-layout">
+        <aside className="tools-filter-panel">
+          <p className="eyebrow">{labels.filters}</p>
+          <div className="mt-3 flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
+            <button type="button" onClick={() => setActiveCategory("all")} data-active={activeCategory === "all" || undefined} className="collection-filter">
+              <span>{labels.all}</span><span>{allTools.length}</span>
+            </button>
+            {sections.map((section) => (
+              <button
+                key={section.key}
+                type="button"
+                onClick={() => setActiveCategory(section.key)}
+                data-active={activeCategory === section.key || undefined}
+                className="collection-filter"
+              >
+                <span className="flex items-center gap-2"><ToolGlyph category={section.key} />{section.title}</span>
+                <span>{section.count}</span>
+              </button>
+            ))}
+          </div>
+          <p className="tools-local-note">{labels.privacy}</p>
+        </aside>
+
+        <section aria-live="polite" className="min-w-0">
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow">{activeCategory === "all" ? labels.all : sections.find((section) => section.key === activeCategory)?.title}</p>
+              <p className="mt-1 text-sm text-[var(--muted)]">{filteredTools.length} {labels.results}</p>
+            </div>
+          </div>
+          {filteredTools.length > 0 ? (
+            <div className="tool-card-grid">
+              {filteredTools.map((tool) => <ToolCard key={tool.slug} tool={tool} locale={locale} />)}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-[var(--line)] bg-[var(--surface)] p-10 text-center text-sm text-[var(--muted)]">
+              {locale === "zh" ? "没有匹配的工具，试试别的关键词。" : "No matching tools. Try another keyword."}
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
   );
 }

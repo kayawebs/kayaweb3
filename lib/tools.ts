@@ -80,6 +80,7 @@ function titleFromSlug(slug: string) {
 }
 
 const SUMMARY_OVERRIDES_EN: Record<string, string> = {
+  "paste": "Create an expiring share link for text, logs, and code snippets.",
   "timestamp-converter": "Convert Unix timestamps into readable UTC, local time, and ISO dates.",
   "current-timestamp": "Get the current Unix timestamp in seconds and milliseconds instantly.",
   "timestamp-milliseconds-converter": "Switch between 10-digit seconds timestamps and 13-digit milliseconds.",
@@ -229,6 +230,7 @@ const SUMMARY_OVERRIDES_EN: Record<string, string> = {
 };
 
 const SUMMARY_OVERRIDES_ZH: Record<string, string> = {
+  "paste": "为文本、日志和代码片段创建可自动过期的分享链接。",
   "timestamp-converter": "把 Unix 时间戳转换为 UTC、本地时间和 ISO 日期。",
   "current-timestamp": "即时获取当前 Unix 秒级和毫秒级时间戳。",
   "timestamp-milliseconds-converter": "在 10 位秒级时间戳和 13 位毫秒时间戳之间快速切换。",
@@ -461,6 +463,7 @@ function buildTools(category: ToolCategoryKey, slugs: string[]): ToolDefinition[
     "day-of-year-calculator",
     "leap-year-checker",
     "json-formatter",
+    "paste",
     "json-minifier",
     "json-validator",
     "json-escape-unescape",
@@ -629,6 +632,7 @@ export const tools: ToolDefinition[] = [
     "time-duration-calculator",
   ]),
   ...buildTools("dev", [
+    "paste",
     "json-formatter",
     "json-minifier",
     "json-validator",

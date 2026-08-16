@@ -1,0 +1,22 @@
+[package]
+name = "kaya-paste"
+version = "1.0.0"
+edition = "2021"
+description = "Share text and code through Kaya Tools"
+
+[[bin]]
+name = "kaya-paste"
+path = "src/main.rs"
+
+[[bin]]
+name = "kp"
+path = "src/main.rs"
+
+[dependencies]
+atty = "0.2"
+clap = { version = "4.5", features = ["derive"] }
+colored = "3.0"
+qrcode = "0.14"
+reqwest = { version = "0.12", features = ["blocking", "json", "rustls-tls"], default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+tempfile = "3.15"

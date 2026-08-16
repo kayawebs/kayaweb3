@@ -1,0 +1,23 @@
+{
+  "name": "@kaya/api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Public API for kayaweb3.xyz tools.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "mongoose": "^8.17.0"
+  }
+}

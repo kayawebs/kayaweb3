@@ -9666,6 +9666,39 @@ const READY_TOOL_COPY = {
 
 const EXTRA_READY_TOOL_COPY = {
   en: {
+    "paste": {
+      title: "Temporary Text Paste",
+      seoTitle: "Temporary Text Paste | Kaya",
+      description: "Create an expiring share link for text, code, logs, and notes without creating an account.",
+      intro:
+        "Use this temporary text paste tool to share code snippets, logs, notes, or other plain text with a short link that expires automatically. Choose a custom link when you need a memorable URL.",
+      exampleHeading: "Example Usage",
+      explanationHeading: "Temporary Text Paste Explained",
+      faqHeading: "FAQ",
+      relatedHeading: "Related Tools",
+      internalLinksHeading: "Internal Links",
+      example: [
+        "Share a terminal log with a teammate without attaching a text file.",
+        "Create a one-day link for a code snippet or configuration sample.",
+        "Use a custom code such as release-notes for a memorable temporary URL.",
+      ],
+      explanation:
+        "A temporary text paste creates a small shareable page for plain text that does not need to live forever. Paste your content, select an expiry time, and the tool creates a direct link that can be opened from any browser. It is useful for sharing logs, code snippets, notes, configuration examples, and other short-lived information when a full document or repository would be unnecessary. The service automatically deletes the paste after its expiry time, so recipients do not need an account and you do not need to clean up old links manually. Avoid putting passwords, private keys, tokens, or sensitive personal data in a paste because anyone with the link can read it while it is active.",
+      faq: [
+        {
+          question: "How long do temporary pastes stay available?",
+          answer: "You can choose one hour, one day, or seven days. The paste is no longer accessible after that time and is automatically removed from storage.",
+        },
+        {
+          question: "Can I choose my own paste URL?",
+          answer: "Yes. Enter an optional 4-50 character custom code using letters, numbers, underscores, or hyphens. It must not already be in use.",
+        },
+        {
+          question: "Should I paste passwords or API keys?",
+          answer: "No. A paste is readable by anyone with the link while it is active, so it is not a secret-sharing service.",
+        },
+      ],
+    },
     "bmi-calculator": {
       title: "BMI Calculator",
       seoTitle: "BMI Calculator | Kaya",
@@ -9899,6 +9932,39 @@ const EXTRA_READY_TOOL_COPY = {
     },
   },
   zh: {
+    "paste": {
+      title: "临时文本分享",
+      seoTitle: "临时文本分享工具 | Kaya",
+      description: "无需注册，为文本、代码、日志和笔记创建可自动过期的分享链接。",
+      intro:
+        "用这个临时文本分享工具，可以为代码片段、日志、笔记和其他纯文本创建短链接，并在设定时间后自动过期；需要易记链接时也可以使用自定义链接名。",
+      exampleHeading: "使用示例",
+      explanationHeading: "临时文本分享工具说明",
+      faqHeading: "常见问题",
+      relatedHeading: "相关工具",
+      internalLinksHeading: "站内链接建议",
+      example: [
+        "把终端日志分享给同事，不再需要额外上传文本文件。",
+        "为代码片段或配置示例创建一个保存一天的链接。",
+        "使用 release-notes 这样的自定义短码，生成方便记忆的临时链接。",
+      ],
+      explanation:
+        "临时文本分享工具会把一段纯文本放到一个可访问的分享页面里，但不需要永久保存。粘贴内容、选择保存时间后，工具会生成一个可以在任意浏览器打开的链接。它适合分享日志、代码片段、笔记、配置示例和其他短期有效的信息，不需要为此建立完整文档或仓库。内容到期后会自动删除，所以也不需要手动清理旧链接。需要注意的是，链接在有效期内对拿到它的人可见，因此不要用于分享密码、私钥、Token 或敏感个人信息。",
+      faq: [
+        {
+          question: "临时文本会保存多久？",
+          answer: "可选 1 小时、1 天或 7 天。超过设定时间后链接将无法访问，数据也会被自动清理。",
+        },
+        {
+          question: "可以自定义分享链接吗？",
+          answer: "可以。填写 4-50 位的自定义短码，只能使用字母、数字、下划线和连字符，且不能与已有短码重复。",
+        },
+        {
+          question: "可以分享密码或 API Key 吗？",
+          answer: "不可以。拿到链接的人在有效期内都能读取内容，因此它不是机密信息分享服务。",
+        },
+      ],
+    },
     "bmi-calculator": {
       title: "BMI 计算器",
       seoTitle: "BMI 计算器 | Kaya",

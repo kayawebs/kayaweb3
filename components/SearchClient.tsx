@@ -1,7 +1,8 @@
 "use client";
-import { useMemo, useState } from "react";
-import Fuse from "fuse.js";
+
 import Link from "next/link";
+import Fuse from "fuse.js";
+import { useMemo, useState } from "react";
 
 type SearchItem = {
   title: string;
@@ -15,89 +16,58 @@ type SearchItem = {
 
 export default function SearchClient({ items }: { items: SearchItem[] }) {
   const [query, setQuery] = useState("");
-
-  const fuse = useMemo(() => {
-    return new Fuse(items, {
-      keys: [
-        { name: "title", weight: 2 },
-        { name: "summary", weight: 1.2 },
-        { name: "tags", weight: 1.1 },
-        { name: "content", weight: 0.8 },
-      ],
-      includeMatches: false,
-      threshold: 0.35,
-    });
-  }, [items]);
-
+  const fuse = useMemo(() => new Fuse(items, {
+    keys: [
+      { name: "title", weight: 2 },
+      { name: "summary", weight: 1.2 },
+      { name: "tags", weight: 1.1 },
+      { name: "content", weight: 0.8 },
+    ],
+    includeMatches: false,
+    threshold: 0.35,
+  }), [items]);
   const results = useMemo(() => {
-    const q = query.trim();
-    if (!q) return [];
-    return fuse.search(q).map((r) => r.item);
-  }, [query, fuse]);
-
-  const shown = query.trim() ? results : items.slice(0, 20);
+    const normalizedQuery = query.trim();
+    return normalizedQuery ? fuse.search(normalizedQuery).map((result) => result.item) : items;
+  }, [fuse, items, query]);
 
   return (
-    <div className="space-y-6">
-      <div className="terminal-panel space-y-4">
-        <div className="mb-1 flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-          <span className="terminal-accent">~/search</span>
-          <span>grep -ri</span>
+    <main className="search-page">
+      <header className="search-header">
+        <p className="eyebrow">Search the journal</p>
+        <h1>Find a note.</h1>
+        <p>Search article titles, tags, summaries, and full content.</p>
+        <div className="search-input-shell">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4" /><path d="m16 16 4.1 4.1" /></svg>
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Try Rust, Bitcoin, sorting..."
+            aria-label="Search the journal"
+            autoFocus
+          />
         </div>
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold tracking-tight">Search</h1>
-          <p className="text-sm text-[var(--terminal-muted)]">
-            Search blog titles, summaries, tags, and content.
-          </p>
-        </div>
-        <input
-          className="w-full rounded border border-[var(--terminal-border)] bg-transparent px-3 py-2 text-sm outline-none focus:border-[var(--terminal-accent)]"
-          placeholder="Type to search…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        {query.trim() && (
-          <div className="text-xs font-mono text-[var(--terminal-muted)]">
-            {results.length} result{results.length === 1 ? "" : "s"}
-          </div>
-        )}
-      </div>
+      </header>
 
-      <div className="terminal-panel">
-        <ul className="space-y-3">
-          {shown.map((post) => (
-            <li key={`${post.category}-${post.slug}`} className="flex flex-col gap-1">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
-                <Link
-                  href={`/blog/${post.category}/${post.slug}`}
-                  className="min-w-0 break-words font-medium text-[var(--foreground)] hover:underline"
-                >
-                  {post.title}
-                </Link>
-                <span className="hidden text-xs font-mono text-[var(--terminal-muted)] sm:inline">
-                  {post.date}
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--terminal-muted)]">
-                <span className="font-mono">/{post.category}/{post.slug}</span>
-                {post.tags?.map((tag) => (
-                  <span key={tag} className="rounded border border-[var(--terminal-border)] px-1.5 py-0.5 text-[10px] font-mono">
-                    #{tag}
-                  </span>
-                ))}
-                <span className="sm:hidden text-[11px] font-mono">{post.date}</span>
-              </div>
-              {post.summary && (
-                <p className="text-sm text-[var(--foreground)]/80">{post.summary}</p>
-              )}
-            </li>
-          ))}
-          {shown.length === 0 && (
-            <li className="text-sm text-[var(--terminal-muted)]">No results.</li>
-          )}
-        </ul>
-      </div>
-    </div>
+      <section className="search-results" aria-live="polite">
+        <div className="mb-4 flex justify-between gap-4 text-sm text-[var(--muted)]">
+          <span>{query.trim() ? "Matches" : "Latest notes"}</span>
+          <span className="font-mono text-xs">{results.length} results</span>
+        </div>
+        {results.length > 0 ? results.map((post) => (
+          <article key={`${post.category}-${post.slug}`} className="search-result-card">
+            <div className="search-result-meta"><span>{post.date}</span><span>{post.category}</span></div>
+            <div>
+              <Link href={`/blog/${post.category}/${post.slug}`} className="search-result-title">{post.title}</Link>
+              {post.summary ? <p>{post.summary}</p> : null}
+              {post.tags?.length ? <div className="journal-tags mt-3">{post.tags.map((tag) => <span key={tag}>{tag}</span>)}</div> : null}
+            </div>
+            <Link href={`/blog/${post.category}/${post.slug}`} aria-label={`Read ${post.title}`} className="search-result-arrow">↗</Link>
+          </article>
+        )) : (
+          <p className="rounded-2xl border border-dashed border-[var(--line)] bg-[var(--surface)] p-10 text-center text-sm text-[var(--muted)]">No notes match that search.</p>
+        )}
+      </section>
+    </main>
   );
 }
-

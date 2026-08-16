@@ -89,6 +89,7 @@ import PdfCompressTool from "@/components/tools/PdfCompressTool";
 import PdfMergeTool from "@/components/tools/PdfMergeTool";
 import PdfSplitTool from "@/components/tools/PdfSplitTool";
 import PdfToImageTool from "@/components/tools/PdfToImageTool";
+import PasteShareTool from "@/components/tools/PasteShareTool";
 import PriceImpactCalculatorTool from "@/components/tools/PriceImpactCalculatorTool";
 import ProfitLossCalculatorTool from "@/components/tools/ProfitLossCalculatorTool";
 import PromptFormatterTool from "@/components/tools/PromptFormatterTool";
@@ -186,6 +187,7 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
   const ui = getToolUiText(locale);
   const jsonLd = getToolJsonLd(slug, locale);
   const toolUi = {
+    "paste": <PasteShareTool locale={locale} />,
     "timestamp-converter": <TimestampConverter locale={locale} />,
     "current-timestamp": <CurrentTimestampTool locale={locale} />,
     "timestamp-milliseconds-converter": <TimestampMillisecondsConverterTool locale={locale} />,
@@ -340,42 +342,35 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
   }[tool.slug];
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans">
+    <div className="tool-detail-page">
       {jsonLd && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       )}
       <RecentToolTracker slug={tool.slug} />
-      <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-8 px-6 pb-16 pt-12 sm:px-10 sm:pt-16">
-        <section className="terminal-panel space-y-5">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/tools/{tool.slug}</span>
-            <span>{tool.status === "ready" ? ui.interactive : ui.scaffold}</span>
-          </div>
-
-          <header className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono text-[var(--terminal-muted)]">
-                <Link href={getToolPath(locale)} className="hover:text-[var(--foreground)]">
-                  /tools
-                </Link>
-                <span>/</span>
-                <span>{tool.slug}</span>
+      <main className="tool-detail-content">
+        <section className="tool-detail-hero">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <p className="eyebrow">{tool.category} · {tool.status === "ready" ? ui.interactive : ui.scaffold}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[var(--muted)]">
+                <Link href={getToolPath(locale)} className="hover:text-[var(--accent-strong)] hover:underline">Tools</Link>
+                <span aria-hidden="true">/</span>
+                <span>{tool.name}</span>
               </div>
-              <ToolLocaleSwitcher locale={locale} slug={slug} />
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight">{content.title}</h1>
-            <p className="max-w-3xl text-sm leading-6 text-[var(--foreground)]/85">{content.intro}</p>
+            <ToolLocaleSwitcher locale={locale} slug={slug} />
+          </div>
+          <header className="mt-7">
+            <h1>{content.title}</h1>
+            <p>{content.intro}</p>
           </header>
         </section>
 
         {toolUi ? (
           toolUi
         ) : (
-          <section className="terminal-panel space-y-4">
-            <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-              <span className="terminal-accent">~/tools/{tool.slug}/ui</span>
-              <span>{ui.pending}</span>
-            </div>
+          <section className="tool-detail-section space-y-4">
+            <p className="eyebrow">{ui.pending}</p>
             <div className="rounded-lg border border-dashed border-[var(--terminal-border)] bg-[var(--terminal-panel-bg)]/30 p-5">
               <p className="text-sm leading-6 text-[var(--foreground)]/85">
                 {ui.pendingCopyPrefix}
@@ -386,11 +381,8 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
           </section>
         )}
 
-        <section className="terminal-panel space-y-4">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/tools/{tool.slug}/examples</span>
-            <span>{ui.usageFile}</span>
-          </div>
+        <section className="tool-detail-section space-y-4">
+          <p className="eyebrow">{content.exampleHeading}</p>
           <div className="space-y-3">
             <h2 className="text-xl font-semibold tracking-tight">{content.exampleHeading}</h2>
             <ul className="space-y-2 text-sm leading-6 text-[var(--foreground)]/85">
@@ -403,22 +395,16 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
           </div>
         </section>
 
-        <section className="terminal-panel space-y-4">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/tools/{tool.slug}/guide</span>
-            <span>{ui.guideFile}</span>
-          </div>
+        <section className="tool-detail-section space-y-4">
+          <p className="eyebrow">{content.explanationHeading}</p>
           <div className="space-y-3">
             <h2 className="text-xl font-semibold tracking-tight">{content.explanationHeading}</h2>
             <p className="text-sm leading-7 text-[var(--foreground)]/85">{content.explanation}</p>
           </div>
         </section>
 
-        <section className="terminal-panel space-y-4">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/tools/{tool.slug}/faq</span>
-            <span>{content.faq.length} items</span>
-          </div>
+        <section className="tool-detail-section space-y-4">
+          <p className="eyebrow">{content.faqHeading}</p>
           <div className="space-y-3">
             <h2 className="text-xl font-semibold tracking-tight">{content.faqHeading}</h2>
             <div className="space-y-3">
@@ -432,11 +418,8 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
           </div>
         </section>
 
-        <section className="terminal-panel space-y-4">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/tools/{tool.slug}/related</span>
-            <span>{relatedTools.length} links</span>
-          </div>
+        <section className="tool-detail-section space-y-4">
+          <p className="eyebrow">{content.relatedHeading}</p>
           <div className="space-y-3">
             <h2 className="text-xl font-semibold tracking-tight">{content.relatedHeading}</h2>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -458,11 +441,8 @@ export default function ToolDetailView({ locale, slug }: ToolDetailViewProps) {
           </div>
         </section>
 
-        <section className="terminal-panel space-y-4">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/tools/{tool.slug}/links</span>
-            <span>{ui.internal}</span>
-          </div>
+        <section className="tool-detail-section space-y-4">
+          <p className="eyebrow">{content.internalLinksHeading}</p>
           <div className="space-y-3">
             <h2 className="text-xl font-semibold tracking-tight">{content.internalLinksHeading}</h2>
             <ul className="grid gap-2 text-sm sm:grid-cols-2">

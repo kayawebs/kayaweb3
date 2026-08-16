@@ -3,91 +3,56 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Kaya",
-  description: "Privacy policy for Kaya blog and tools, including analytics and browser-side storage usage.",
+  description: "Privacy information for Kaya's journal, browser tools, analytics, and temporary paste service.",
 };
 
-const updatedAt = "2026-05-05";
+const updatedAt = "2026-08-16";
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-8 px-6 pb-16 pt-12 sm:px-10 sm:pt-16">
-        <section className="terminal-panel space-y-5">
-          <div className="flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/privacy</span>
-            <span>cat policy.md</span>
-          </div>
-          <header className="space-y-3">
-            <h1 className="text-2xl font-semibold tracking-tight">Privacy Policy</h1>
-            <p className="text-sm text-[var(--foreground)]/85">
-              This page explains what Kaya collects, what stays in your browser, and how analytics works on the site.
-            </p>
-            <p className="text-xs font-mono text-[var(--terminal-muted)]">Last updated: {updatedAt}</p>
-          </header>
+    <main className="policy-page">
+      <header className="policy-header">
+        <p className="eyebrow">Kaya</p>
+        <h1>Privacy is a feature, not a footnote.</h1>
+        <p className="policy-intro">This page explains what runs locally, what is measured, and what is temporarily stored when you use a server-backed tool.</p>
+        <p className="mt-5 font-mono text-xs text-[var(--muted)]">Last updated: {updatedAt}</p>
+      </header>
+
+      <article className="policy-content">
+        <section>
+          <h2>Scope</h2>
+          <p>Kaya includes a journal, search, and practical browser tools. Most tools do not require an account and process their input entirely in your browser.</p>
         </section>
-
-        <section className="terminal-panel space-y-6 text-sm leading-7 text-[var(--foreground)]/90">
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold tracking-tight">1. Scope</h2>
-            <p>
-              This website includes Kaya&apos;s blog, search pages, and browser-based tools. Most tools run fully on the client side and do not require you to create an account or submit personal data to a backend.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold tracking-tight">2. Analytics</h2>
-            <p>
-              This site uses Vercel Web Analytics to measure page views, traffic sources, and high-level usage trends. The goal is to understand which pages and tools are useful, improve content quality, and maintain site performance.
-            </p>
-            <p>
-              Vercel Analytics may process technical request data such as page path, referrer, browser, device class, and country-level location for aggregate reporting.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold tracking-tight">3. Browser Storage</h2>
-            <p>
-              Some tools store small pieces of local state directly in your browser. For example, the tools index can remember recently opened tools using <code>localStorage</code>. This data stays on your device.
-            </p>
-            <p>You can clear this data at any time by clearing your browser storage for this site.</p>
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold tracking-tight">4. Tool Inputs</h2>
-            <p>
-              Most tool inputs are processed locally in the browser. If a specific tool needs a remote request, that should be evident from the tool itself, such as asking for an RPC endpoint or external URL.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold tracking-tight">5. Third-Party Links</h2>
-            <p>
-              The site may link to GitHub, external projects, reference sites, or other third-party resources. Once you leave this site, their own privacy policies apply.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold tracking-tight">6. Contact</h2>
-            <p>
-              If you have privacy questions about this site, contact{" "}
-              <a href="mailto:kayaweb3@gmail.com" className="underline underline-offset-2">
-                kayaweb3@gmail.com
-              </a>
-              .
-            </p>
-          </div>
-
-          <div className="border-t border-[var(--terminal-border)] pt-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <Link href="/tools" className="terminal-accent underline-offset-2 hover:underline">
-              /tools
-            </Link>
-            <span> · </span>
-            <Link href="/" className="terminal-accent underline-offset-2 hover:underline">
-              /
-            </Link>
-          </div>
+        <section>
+          <h2>Analytics</h2>
+          <p>Kaya uses Vercel Web Analytics to understand page visits, referral paths, browser and device class, and broad country-level trends. It is used to measure useful pages and improve performance.</p>
         </section>
+        <section>
+          <h2>Browser storage</h2>
+          <p>Some tools save small preferences locally, such as recently opened tools or a game score. This information stays in the browser on your device. You can remove it by clearing this site&apos;s browser storage.</p>
+        </section>
+        <section>
+          <h2>Tool inputs</h2>
+          <p>Most inputs stay local. A tool that needs a remote request should make that clear in its interface. For example, the temporary paste tool sends the text you choose to share to the Kaya API so it can be shown through the generated link.</p>
+        </section>
+        <section>
+          <h2>Temporary paste service</h2>
+          <p>Temporary pastes are readable by anyone with their link until their selected expiry time. The content, code, creation time, and expiry time are stored only to serve the link and then are automatically deleted. Do not share passwords, private keys, tokens, or sensitive personal information through this service.</p>
+        </section>
+        <section>
+          <h2>External links</h2>
+          <p>Links to GitHub, references, and other third-party services are governed by their own privacy policies once you leave Kaya.</p>
+        </section>
+        <section>
+          <h2>Contact</h2>
+          <p>For privacy questions, email <a href="mailto:kayaweb3@gmail.com">kayaweb3@gmail.com</a>.</p>
+        </section>
+      </article>
+
+      <div className="policy-links">
+        <Link href="/tools" className="text-link">Browse tools</Link>
+        <Link href="/" className="text-link">Home</Link>
       </div>
-    </div>
+    </main>
   );
 }

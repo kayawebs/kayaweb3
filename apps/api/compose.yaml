@@ -1,0 +1,48 @@
+name: kaya-api
+
+services:
+  api:
+    build:
+      context: .
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-4000}:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      MONGODB_URI: mongodb://mongo:27017/kaya
+      PUBLIC_WEB_URL: ${PUBLIC_WEB_URL:-https://www.kayaweb3.xyz}
+      CORS_ORIGIN: ${CORS_ORIGIN:-https://kayaweb3.xyz,https://www.kayaweb3.xyz}
+      PASTE_DEFAULT_TTL_HOURS: ${PASTE_DEFAULT_TTL_HOURS:-24}
+      PASTE_MAX_TTL_HOURS: ${PASTE_MAX_TTL_HOURS:-168}
+      PASTE_MAX_CHARACTERS: ${PASTE_MAX_CHARACTERS:-250000}
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:4000/v1/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  mongo:
+    image: mongo:8.0
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "mongosh --quiet --eval \"quit(db.adminCommand('ping').ok ? 0 : 1)\""
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongo-data:

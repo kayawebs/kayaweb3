@@ -2,64 +2,62 @@ import Link from "next/link";
 
 import { getAllPosts } from "@/lib/blog";
 
-export default async function BlogIndexPage() {
+export default function BlogIndexPage() {
   const posts = getAllPosts();
+  const featured = posts[0];
+  const remainingPosts = posts.slice(1);
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans">
-      <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-8 px-6 pb-16 pt-12 sm:px-10 sm:pt-16">
-        <section className="terminal-panel">
-          <div className="mb-4 flex items-center justify-between gap-4 text-xs font-mono text-[var(--terminal-muted)]">
-            <span className="terminal-accent">~/blog</span>
-            <span>ls -la</span>
-          </div>
-          <div className="space-y-4">
-            <header className="space-y-2">
-              <h1 className="text-2xl font-semibold tracking-tight">所有博客</h1>
-              <p className="text-sm text-[var(--terminal-muted)]">
-                按时间倒序列出所有文章，点击标题可查看详情。
-              </p>
-            </header>
+    <main className="journal-page">
+      <header className="journal-intro">
+        <p className="eyebrow">Kaya Journal</p>
+        <h1>Notes from building on the web.</h1>
+        <p>Practical writing on blockchain systems, frontend engineering, developer workflows, and the mental models behind them.</p>
+      </header>
 
-            <ul className="divide-y divide-[var(--terminal-border)] border border-[var(--terminal-border)] rounded-md bg-[var(--terminal-panel-bg)]/40">
-              {posts.map((post) => (
-                <li key={`${post.category}-${post.slug}`} className="flex flex-col gap-1 px-3 sm:px-4 py-3 text-sm hover:bg-[var(--terminal-panel-bg)]">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4">
-                    <Link
-                      href={`/blog/${post.category}/${post.slug}`}
-                      className="block min-w-0 break-words font-medium text-[var(--foreground)] hover:underline"
-                    >
-                      {post.title}
-                    </Link>
-                    <span className="hidden text-xs font-mono text-[var(--terminal-muted)] sm:inline">
-                      {post.date}
-                    </span>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 text-xs text-[var(--terminal-muted)]">
-                    <span className="min-w-0 truncate font-mono">/{post.category}/{post.slug}</span>
-                    <span className="sm:hidden text-[11px] font-mono">{post.date}</span>
-                    <div className="flex min-w-0 flex-wrap gap-1 sm:justify-end sm:max-w-xs">
-                      {post.tags?.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded border border-[var(--terminal-border)] px-1.5 py-0.5 text-[10px] font-mono"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                      {post.summary && (
-                        <span className="min-w-0 truncate text-right">
-                          {post.summary}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+      {featured ? (
+        <Link href={`/blog/${featured.category}/${featured.slug}`} className="journal-feature">
+          <div className="journal-feature-meta">
+            <span>{featured.date}</span>
+            <span>{featured.category}</span>
           </div>
-        </section>
-      </main>
-    </div>
+          <div>
+            <h2>{featured.title}</h2>
+            {featured.summary ? <p>{featured.summary}</p> : null}
+            <span className="text-link">Read note <span aria-hidden="true">↗</span></span>
+          </div>
+        </Link>
+      ) : null}
+
+      <section className="journal-list-section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">All notes</p>
+            <h2>Reading shelf</h2>
+          </div>
+          <span className="font-mono text-xs text-[var(--muted)]">{posts.length} entries</span>
+        </div>
+        <div className="journal-list">
+          {remainingPosts.map((post) => (
+            <article key={`${post.category}-${post.slug}`} className="journal-list-item">
+              <div className="journal-list-meta">
+                <span>{post.date}</span>
+                <span>{post.category}</span>
+              </div>
+              <div>
+                <Link href={`/blog/${post.category}/${post.slug}`} className="journal-list-title">{post.title}</Link>
+                {post.summary ? <p>{post.summary}</p> : null}
+                {post.tags?.length ? (
+                  <div className="journal-tags">
+                    {post.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                  </div>
+                ) : null}
+              </div>
+              <Link href={`/blog/${post.category}/${post.slug}`} className="journal-list-arrow" aria-label={`Read ${post.title}`}>↗</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
