@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import BlogCategoryIcon from "@/components/blog/BlogCategoryIcon";
 import { getAllPosts, getBlogCategories } from "@/lib/blog";
 
 export default function BlogIndexPage() {
@@ -26,7 +27,8 @@ export default function BlogIndexPage() {
         </div>
         <div className="journal-category-grid">
           {categories.map((category) => (
-            <Link key={category.slug} href={`/blog/${category.slug}`} className="journal-category-card">
+            <Link key={category.slug} href={`/blog/${category.slug}`} className="journal-category-card" data-category={category.slug}>
+              <BlogCategoryIcon category={category.slug} />
               <span className="journal-category-count">{String(category.count).padStart(2, "0")}</span>
               <span className="journal-category-name">{category.label}</span>
               <span className="journal-category-link">Browse <span aria-hidden="true">↗</span></span>

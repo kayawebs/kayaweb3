@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 import type { ToolLocale } from "@/lib/tool-i18n";
 
@@ -40,7 +40,9 @@ const copy = {
     content: "Text or code",
     contentPlaceholder: "Paste a snippet, note, log, or code block. You can also paste an image here...",
     image: "Image (optional)",
-    imageHint: "Paste an image in the text area, drop one here, or choose a file. PNG, JPEG, GIF, WebP, AVIF · up to 10 MB.",
+    imageHint: "Drop an image anywhere on this page, press ⌘V / Ctrl+V, or choose a file. PNG, JPEG, GIF, WebP, AVIF · up to 10 MB.",
+    imageShortcut: "Drop anywhere · ⌘V / Ctrl+V",
+    dropImage: "Drop image to attach",
     chooseImage: "Choose image",
     removeImage: "Remove image",
     imageReady: "Image ready to share",
@@ -63,6 +65,8 @@ const copy = {
     expiresAt: "Expires",
     raw: "Open raw text",
     imageAttached: "Image attached",
+    directImage: "Direct image URL",
+    copyImage: "Copy image link",
     invalidCode: "Custom link must use 4-50 letters, numbers, underscores, or hyphens.",
     empty: "Add some text, code, or an image before creating a link.",
     copyFailed: "Copy failed. Select the link and copy it manually.",
@@ -72,7 +76,9 @@ const copy = {
     content: "文本或代码",
     contentPlaceholder: "粘贴一段文本、笔记、日志或代码。也可以直接在这里粘贴图片...",
     image: "图片（可选）",
-    imageHint: "可在文本框内直接粘贴图片、拖放图片，或选择本地文件。支持 PNG、JPEG、GIF、WebP、AVIF，最大 10 MB。",
+    imageHint: "把图片拖到页面任意位置、按 ⌘V / Ctrl+V，或选择本地文件。支持 PNG、JPEG、GIF、WebP、AVIF，最大 10 MB。",
+    imageShortcut: "拖到页面任意位置 · ⌘V / Ctrl+V",
+    dropImage: "松开即可添加图片",
     chooseImage: "选择图片",
     removeImage: "移除图片",
     imageReady: "图片已准备好分享",
@@ -95,6 +101,8 @@ const copy = {
     expiresAt: "过期时间",
     raw: "打开纯文本",
     imageAttached: "已附带图片",
+    directImage: "图片直链",
+    copyImage: "复制图片链接",
     invalidCode: "自定义链接只能使用 4-50 位字母、数字、下划线或连字符。",
     empty: "请先输入文本、代码或添加一张图片。",
     copyFailed: "复制失败，请手动选择链接复制。",
@@ -110,6 +118,21 @@ async function readJson<T>(response: Response): Promise<T & { error?: string }> 
   return response.json() as Promise<T & { error?: string }>;
 }
 
+function getImageFromFiles(files: FileList) {
+  return Array.from(files).find((file) => ACCEPTED_IMAGE_TYPES.has(file.type)) ?? null;
+}
+
+function getImageFromClipboard(items: DataTransferItemList) {
+  const imageItem = Array.from(items).find((item) => item.kind === "file" && ACCEPTED_IMAGE_TYPES.has(item.type));
+  return imageItem?.getAsFile() ?? null;
+}
+
+function hasImageInDataTransfer(dataTransfer: DataTransfer | null) {
+  if (!dataTransfer) return false;
+  return getImageFromFiles(dataTransfer.files) !== null
+    || Array.from(dataTransfer.items).some((item) => item.kind === "file" && ACCEPTED_IMAGE_TYPES.has(item.type));
+}
+
 export default function PasteShareTool({ locale }: PasteShareToolProps) {
   const text = copy[locale];
   const [content, setContent] = useState("");
@@ -122,6 +145,9 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [copyLabel, setCopyLabel] = useState<string>(text.copy);
+  const [imageCopyLabel, setImageCopyLabel] = useState<string>(text.copyImage);
+  const [isPageDragActive, setIsPageDragActive] = useState(false);
+  const dragDepth = useRef(0);
 
   useEffect(() => {
     if (!imageFile) {
@@ -144,9 +170,68 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
     setError("");
   }
 
+  const handlePagePaste = useEffectEvent((event: ClipboardEvent) => {
+    const image = event.clipboardData ? getImageFromClipboard(event.clipboardData.items) : null;
+    if (!image) return;
+
+    event.preventDefault();
+    selectImage(image);
+  });
+
+  const handlePageDragEnter = useEffectEvent((event: DragEvent) => {
+    if (!hasImageInDataTransfer(event.dataTransfer)) return;
+
+    event.preventDefault();
+    dragDepth.current += 1;
+    setIsPageDragActive(true);
+  });
+
+  const handlePageDragLeave = useEffectEvent((event: DragEvent) => {
+    if (!hasImageInDataTransfer(event.dataTransfer)) return;
+
+    dragDepth.current = Math.max(0, dragDepth.current - 1);
+    if (dragDepth.current === 0) setIsPageDragActive(false);
+  });
+
+  const handlePageDragOver = useEffectEvent((event: DragEvent) => {
+    if (!hasImageInDataTransfer(event.dataTransfer)) return;
+
+    event.preventDefault();
+    setIsPageDragActive(true);
+  });
+
+  const handlePageDrop = useEffectEvent((event: DragEvent) => {
+    const image = event.dataTransfer ? getImageFromFiles(event.dataTransfer.files) : null;
+    if (!image) return;
+
+    event.preventDefault();
+    dragDepth.current = 0;
+    setIsPageDragActive(false);
+    selectImage(image);
+  });
+
+  useEffect(() => {
+    if (paste) return;
+
+    window.addEventListener("paste", handlePagePaste);
+    window.addEventListener("dragenter", handlePageDragEnter);
+    window.addEventListener("dragleave", handlePageDragLeave);
+    window.addEventListener("dragover", handlePageDragOver);
+    window.addEventListener("drop", handlePageDrop);
+
+    return () => {
+      window.removeEventListener("paste", handlePagePaste);
+      window.removeEventListener("dragenter", handlePageDragEnter);
+      window.removeEventListener("dragleave", handlePageDragLeave);
+      window.removeEventListener("dragover", handlePageDragOver);
+      window.removeEventListener("drop", handlePageDrop);
+      dragDepth.current = 0;
+      setIsPageDragActive(false);
+    };
+  }, [paste]);
+
   function handleClipboardPaste(event: React.ClipboardEvent<HTMLTextAreaElement>) {
-    const imageItem = Array.from(event.clipboardData.items).find((item) => item.kind === "file" && ACCEPTED_IMAGE_TYPES.has(item.type));
-    const image = imageItem?.getAsFile();
+    const image = getImageFromClipboard(event.clipboardData.items);
     if (!image) return;
 
     event.preventDefault();
@@ -171,6 +256,7 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
     setLoading(true);
     setError("");
     setCopyLabel(text.copy);
+    setImageCopyLabel(text.copyImage);
 
     try {
       let image: { key: string } | undefined;
@@ -226,6 +312,17 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
     }
   }
 
+  async function copyImageLink() {
+    if (!paste?.image) return;
+
+    try {
+      await navigator.clipboard.writeText(paste.image.url);
+      setImageCopyLabel(text.copied);
+    } catch {
+      setError(text.copyFailed);
+    }
+  }
+
   function reset() {
     setContent("");
     setImageFile(null);
@@ -234,6 +331,7 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
     setPaste(null);
     setError("");
     setCopyLabel(text.copy);
+    setImageCopyLabel(text.copyImage);
   }
 
   if (paste) {
@@ -251,6 +349,15 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
           <input aria-label="Share link" value={paste.url} readOnly className="tool-input font-mono" />
           <button type="button" onClick={copyLink} className="button-primary shrink-0">{copyLabel}</button>
         </div>
+        {paste.image ? (
+          <div className="space-y-2">
+            <p className="tool-label">{text.directImage}</p>
+            <div className="share-link-row">
+              <input aria-label={text.directImage} value={paste.image.url} readOnly className="tool-input font-mono" />
+              <button type="button" onClick={copyImageLink} className="button-secondary shrink-0">{imageCopyLabel}</button>
+            </div>
+          </div>
+        ) : null}
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-[var(--muted)]">
           <span>{text.expiresAt}: {new Date(paste.expiresAt).toLocaleString(locale === "zh" ? "zh-CN" : "en-US")}</span>
           {paste.image ? <span>{text.imageAttached}</span> : null}
@@ -262,6 +369,12 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
 
   return (
     <section className="tool-workspace">
+      {isPageDragActive ? (
+        <div className="paste-page-drop-overlay" aria-live="polite">
+          <span>{text.dropImage}</span>
+          <small>{text.imageShortcut}</small>
+        </div>
+      ) : null}
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="space-y-2">
           <div className="flex items-center justify-between gap-3">
@@ -284,15 +397,22 @@ export default function PasteShareTool({ locale }: PasteShareToolProps) {
           <span className="tool-label">{text.image}</span>
           <div
             className="paste-image-drop"
-            onDragOver={(event) => event.preventDefault()}
+            onDragOver={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+            }}
             onDrop={(event) => {
               event.preventDefault();
-              selectImage(event.dataTransfer.files.item(0));
+              event.stopPropagation();
+              dragDepth.current = 0;
+              setIsPageDragActive(false);
+              selectImage(getImageFromFiles(event.dataTransfer.files));
             }}
           >
             {imagePreview ? <img src={imagePreview} alt="Selected paste" className="paste-image-preview" /> : <div className="paste-image-placeholder" aria-hidden="true">IMG</div>}
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-[var(--foreground)]">{imageFile ? text.imageReady : text.imageHint}</p>
+              <p className="mt-2 font-mono text-[0.68rem] font-semibold tracking-[0.04em] text-[var(--accent-strong)]">{text.imageShortcut}</p>
               {imageFile ? <p className="mt-1 truncate font-mono text-xs text-[var(--muted)]">{imageFile.name} · {(imageFile.size / 1024 / 1024).toFixed(2)} MB</p> : null}
             </div>
             <div className="flex shrink-0 flex-wrap gap-2">
