@@ -33,11 +33,11 @@ export default function PrivacyPage() {
         </section>
         <section>
           <h2>Tool inputs</h2>
-          <p>Most inputs stay local. A tool that needs a remote request should make that clear in its interface. For example, the temporary paste tool sends the text you choose to share to the Kaya API so it can be shown through the generated link.</p>
+          <p>Most inputs stay local. A tool that needs a remote request should make that clear in its interface. For example, the temporary paste tool sends the text you choose to share to the Kaya API. Attached images are uploaded directly to temporary object storage through a short-lived upload URL.</p>
         </section>
         <section>
           <h2>Temporary paste service</h2>
-          <p>Temporary pastes are readable by anyone with their link until their selected expiry time. The content, code, creation time, and expiry time are stored only to serve the link and then are automatically deleted. Do not share passwords, private keys, tokens, or sensitive personal information through this service.</p>
+          <p>Temporary pastes and images are readable by anyone with their link until their selected expiry time. Paste records are automatically deleted after expiry. Attached images are stored in a public, dedicated temporary-storage prefix and removed by an object-storage lifecycle rule shortly after the maximum paste lifetime. Do not share passwords, private keys, tokens, or sensitive personal information through this service.</p>
         </section>
         <section>
           <h2>External links</h2>

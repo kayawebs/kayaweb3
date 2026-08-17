@@ -32,13 +32,13 @@ export default function Home() {
       <section className="home-hero">
         <div className="max-w-3xl">
           <p className="eyebrow">Independent builder · Web3 & the web</p>
-          <h1>I make useful systems, then write down what I learn.</h1>
+          <h1>Useful tools.<br />Clear notes.</h1>
           <p className="home-hero-copy">
-            Kaya is a home for practical browser tools, on-chain experiments, and clear technical notes about the systems behind them.
+            Kaya is a practical collection of browser tools, on-chain experiments, and writing about the systems behind them.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/tools" className="button-primary">Browse tools <span aria-hidden="true">↗</span></Link>
-            <Link href="/blog" className="button-secondary">Read the journal</Link>
+            <Link href="/blog" className="button-secondary">Read the blog</Link>
           </div>
         </div>
         <div className="home-hero-aside">
@@ -74,7 +74,7 @@ export default function Home() {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Latest note</p>
-              <h2>From the journal</h2>
+              <h2>From the blog</h2>
             </div>
             <Link href="/blog" className="text-link">All writing</Link>
           </div>

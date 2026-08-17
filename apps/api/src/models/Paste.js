@@ -11,7 +11,13 @@ const pasteSchema = new mongoose.Schema(
     },
     content: {
       type: String,
-      required: true,
+      default: "",
+    },
+    image: {
+      key: String,
+      url: String,
+      contentType: String,
+      size: Number,
     },
     customCode: {
       type: Boolean,

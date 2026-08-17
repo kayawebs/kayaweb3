@@ -36,9 +36,9 @@ function createApp(config) {
 
   app.use((_req, res) => res.status(404).json({ error: "Route not found." }));
   app.use((error, _req, res, _next) => {
-    console.error(error);
-    const status = error.type === "entity.too.large" ? 413 : 500;
-    res.status(status).json({ error: status === 413 ? "Request body is too large." : "Unexpected server error." });
+    const status = error.statusCode ?? (error.type === "entity.too.large" ? 413 : 500);
+    if (status >= 500) console.error(error);
+    res.status(status).json({ error: status === 413 ? "Request body is too large." : error.message ?? "Unexpected server error." });
   });
 
   return app;

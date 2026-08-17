@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const navigation = [
   { href: "/", label: "Home", compact: true },
-  { href: "/blog", label: "Journal" },
+  { href: "/blog", label: "Blog" },
   { href: "/tools", label: "Tools" },
   { href: "/tools/paste", label: "Paste" },
   { href: "/search", label: "Search", compact: true },
@@ -13,6 +13,9 @@ const navigation = [
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
+  if (href === "/tools") {
+    return (pathname === "/tools" || pathname.startsWith("/tools/")) && !pathname.startsWith("/tools/paste");
+  }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 

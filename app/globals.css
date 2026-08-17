@@ -174,9 +174,9 @@ a {
 .eyebrow {
   color: var(--accent);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.075em;
   text-transform: uppercase;
 }
 
@@ -276,6 +276,66 @@ a {
 .share-link-row {
   display: flex;
   gap: 0.65rem;
+}
+
+.paste-image-drop {
+  display: flex;
+  min-height: 7.5rem;
+  align-items: center;
+  gap: 0.9rem;
+  border: 1px dashed color-mix(in srgb, var(--accent) 42%, var(--line));
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--accent-soft) 34%, var(--surface));
+  padding: 0.85rem;
+}
+
+.paste-image-placeholder,
+.paste-image-preview {
+  width: 5rem;
+  height: 5rem;
+  flex: none;
+  border-radius: 0.55rem;
+}
+
+.paste-image-placeholder {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--accent-strong);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.paste-image-preview {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  object-fit: cover;
+}
+
+.paste-image-reader {
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: var(--surface-muted);
+}
+
+.paste-image-reader img {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+}
+
+.paste-image-reader figcaption {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.55rem 0.75rem;
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
 }
 
 .paste-reader {
@@ -545,29 +605,37 @@ a {
 
 .home-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(16rem, 0.55fr);
-  gap: clamp(2rem, 6vw, 6rem);
+  grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.38fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
   align-items: end;
   border-bottom: 1px solid var(--line);
   padding: 0 0 clamp(2.5rem, 7vw, 5rem);
 }
 
-.home-hero h1,
-.journal-intro h1 {
-  max-width: 10.5ch;
+.home-hero h1 {
+  max-width: 13ch;
   margin-top: 1rem;
-  font-size: clamp(2.65rem, 6.7vw, 5.5rem);
+  font-size: clamp(2.8rem, 5.7vw, 5.1rem);
   font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.073em;
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.journal-intro h1 {
+  max-width: 13ch;
+  margin-top: 1rem;
+  font-size: clamp(2.45rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.055em;
 }
 
 .home-hero-copy {
   max-width: 43rem;
-  margin-top: 1.7rem;
+  margin-top: 1.4rem;
   color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
 .home-hero-aside {
@@ -713,15 +781,68 @@ a {
 }
 
 .journal-intro h1 {
-  max-width: 12ch;
+  max-width: 14ch;
 }
 
 .journal-intro > p:last-child {
   max-width: 43rem;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   color: var(--muted);
-  font-size: 1.02rem;
-  line-height: 1.75;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.journal-category-overview {
+  margin-top: clamp(2.6rem, 6vw, 4.8rem);
+}
+
+.journal-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.journal-category-card {
+  display: grid;
+  min-height: 10.5rem;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr auto;
+  border: 1px solid var(--line);
+  border-radius: 0.95rem;
+  background: var(--surface);
+  padding: 1rem;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.journal-category-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 0.75rem 1.5rem rgba(19, 35, 26, 0.08);
+}
+
+.journal-category-count {
+  color: var(--muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+}
+
+.journal-category-name {
+  grid-column: 1 / -1;
+  align-self: end;
+  font-size: 1.3rem;
+  font-weight: 680;
+  letter-spacing: -0.045em;
+}
+
+.journal-category-link {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+  color: var(--accent-strong);
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .journal-feature {
@@ -1165,7 +1286,8 @@ a {
 
   .home-hero,
   .home-project-grid,
-  .journal-feature {
+  .journal-feature,
+  .journal-category-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1217,7 +1339,8 @@ a {
   }
 
   .share-link-row,
-  .paste-reader-header {
+  .paste-reader-header,
+  .paste-image-drop {
     align-items: stretch;
     flex-direction: column;
   }

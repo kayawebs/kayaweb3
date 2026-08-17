@@ -12,6 +12,11 @@ type PasteResponse = {
   content: string;
   createdAt: string;
   expiresAt: string;
+  image: {
+    url: string;
+    contentType: string;
+    size: number;
+  } | null;
 };
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://api.kayaweb3.xyz/v1").replace(/\/$/, "");
@@ -59,7 +64,13 @@ export default function PasteViewer({ code }: PasteViewerProps) {
             <span>Created {new Date(paste.createdAt).toLocaleString()}</span>
             <span>Expires {new Date(paste.expiresAt).toLocaleString()}</span>
           </div>
-          <pre className="paste-content">{paste.content}</pre>
+          {paste.image ? (
+            <figure className="paste-image-reader">
+              <img src={paste.image.url} alt="Shared paste" />
+              <figcaption>{paste.image.contentType} · {(paste.image.size / 1024 / 1024).toFixed(2)} MB</figcaption>
+            </figure>
+          ) : null}
+          {paste.content ? <pre className="paste-content">{paste.content}</pre> : null}
         </>
       )}
     </article>

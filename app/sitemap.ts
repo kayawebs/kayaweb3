@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts, getBlogCategories } from "@/lib/blog";
 import { getSiteUrl } from "@/lib/site";
 import { tools } from "@/lib/tools";
 
@@ -45,5 +45,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...staticEntries, ...toolEntries, ...blogEntries];
+  const categoryEntries: MetadataRoute.Sitemap = getBlogCategories().map((category) => ({
+    url: `${siteUrl}/blog/${category.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticEntries, ...categoryEntries, ...toolEntries, ...blogEntries];
 }

@@ -7,6 +7,12 @@ function formatPaste(paste, publicWebUrl) {
     url: `${publicWebUrl}/p/${encodeURIComponent(paste.code)}`,
     createdAt: paste.createdAt,
     expiresAt: paste.expiresAt,
+    hasText: Boolean(paste.content),
+    image: paste.image?.url ? {
+      url: paste.image.url,
+      contentType: paste.image.contentType,
+      size: paste.image.size,
+    } : null,
   };
 }
 
@@ -20,18 +26,19 @@ async function getAvailableCode() {
   throw new Error("Could not generate a unique paste code.");
 }
 
-function createPasteController(config) {
+function createPasteController(config, s3Service) {
   return async function createPaste(req, res, next) {
     try {
       const content = typeof req.body.content === "string" ? req.body.content : "";
       const customCode = typeof req.body.customCode === "string" ? req.body.customCode.trim() : "";
       const requestedTtl = Number.parseInt(String(req.body.expiresInHours ?? ""), 10);
+      const imageKey = typeof req.body.image?.key === "string" ? req.body.image.key : "";
       const ttlHours = Number.isFinite(requestedTtl)
         ? requestedTtl
         : config.defaultTtlHours;
 
-      if (!content.trim()) {
-        return res.status(400).json({ error: "Content is required." });
+      if (!content.trim() && !imageKey) {
+        return res.status(400).json({ error: "Text, code, or an image is required." });
       }
 
       if (content.length > config.maxCharacters) {
@@ -46,6 +53,12 @@ function createPasteController(config) {
         return res.status(400).json({ error: "Custom code must use 4-50 letters, numbers, underscores, or hyphens." });
       }
 
+      if (imageKey && !s3Service) {
+        return res.status(503).json({ error: "Image uploads are not configured on this server." });
+      }
+
+      const image = imageKey ? await s3Service.verifyImage(imageKey) : undefined;
+
       const code = customCode || await getAvailableCode();
       const expiresAt = new Date(Date.now() + ttlHours * 60 * 60 * 1000);
 
@@ -53,6 +66,7 @@ function createPasteController(config) {
         const paste = await Paste.create({
           code,
           content,
+          image,
           customCode: Boolean(customCode),
           expiresAt,
         });
@@ -64,6 +78,22 @@ function createPasteController(config) {
         }
         throw error;
       }
+    } catch (error) {
+      return next(error);
+    }
+  };
+}
+
+function createImageUploadController(config, s3Service) {
+  return async function createImageUpload(req, res, next) {
+    try {
+      if (!s3Service) {
+        return res.status(503).json({ error: "Image uploads are not configured on this server." });
+      }
+
+      const size = Number(req.body.size);
+      const image = await s3Service.createImageUpload(req.body.contentType, size);
+      return res.status(201).json(image);
     } catch (error) {
       return next(error);
     }
@@ -91,10 +121,11 @@ async function getRawPaste(req, res, next) {
   try {
     const paste = await findPaste(req.params.code);
     if (!paste) return res.status(404).type("text/plain").send("Paste not found or expired.");
+    if (!paste.content) return res.status(404).type("text/plain").send("This paste contains an image, not text.");
     return res.type("text/plain; charset=utf-8").send(paste.content);
   } catch (error) {
     return next(error);
   }
 }
 
-module.exports = { createPasteController, getPasteController, getRawPaste };
+module.exports = { createImageUploadController, createPasteController, getPasteController, getRawPaste };

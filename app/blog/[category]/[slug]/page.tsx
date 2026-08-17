@@ -34,7 +34,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <article>
         <header className="article-header">
           <div className="article-breadcrumbs">
-            <Link href="/blog">Journal</Link><span>/</span><Link href="/blog">{category}</Link>
+            <Link href="/blog">Blog</Link><span>/</span><Link href={`/blog/${category}`}>{category}</Link>
           </div>
           <p className="eyebrow mt-8">{post.category} · {post.date}</p>
           <h1>{post.title}</h1>

@@ -17,6 +17,21 @@ export type BlogPost = BlogMeta & {
   content: string;
 };
 
+export type BlogCategory = {
+  slug: string;
+  label: string;
+  count: number;
+  posts: BlogMeta[];
+};
+
+export function formatBlogCategory(category: string) {
+  return category
+    .split(/[-_]/)
+    .filter(Boolean)
+    .map((part) => `${part.slice(0, 1).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
+}
+
 export function getAllPosts(): BlogMeta[] {
   const categories = fs.readdirSync(CONTENT_DIR);
 
@@ -94,6 +109,25 @@ export function getAllPostsWithContent(): BlogPost[] {
 
 export function getPostsByCategory(category: string): BlogMeta[] {
   return getAllPosts().filter((post) => post.category === category);
+}
+
+export function getBlogCategories(): BlogCategory[] {
+  const groups = new Map<string, BlogMeta[]>();
+
+  for (const post of getAllPosts()) {
+    const entries = groups.get(post.category) ?? [];
+    entries.push(post);
+    groups.set(post.category, entries);
+  }
+
+  return [...groups.entries()]
+    .map(([slug, posts]) => ({
+      slug,
+      label: formatBlogCategory(slug),
+      count: posts.length,
+      posts,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 }
 
 export function getPost(category: string, slug: string): BlogPost | null {
